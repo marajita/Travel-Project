@@ -1,8 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- jQuery script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Site script -->
+    <script src="assets/javascript/app.js"></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-yDQU-uSriZIt8_OIzTrcqvcBK2l_2v0&libraries=places&callback=initMap"
+      async
+      defer
+    ></script>
     <title>DART</title>
+
+    <!--
+      !!! DELETE STYLE TAG WHEN CSS FILE IS UP, JUST FOR TESTING PURPOSES !!!
+    -->
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+      #map {
+        height: 500px;
+        width: 930px;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
   </head>
-  <body></body>
+  <body>
+    <div id="map"></div>
+    <div id="buttons">
+      <button id="raleigh-btn">Raleigh</button>
+      <button id="new-york-btn">New York</button>
+      <button id="los-angeles-btn">Los Angeles</button>
+    </div>
+    <div id="results">Results:</div>
+  </body>
 </html>
