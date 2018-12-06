@@ -39,6 +39,114 @@ function createMarker(place) {
   });
 }
 $(document).ready(function() {
+  $("#flights-test-btn").on("click", function() {
+    var apiKey = "AuMRk7LAmJtD3j86vh4BqAO6tBcnjunT";
+    var origin = "RDU";
+    var destination = "LAX";
+    var departureDate = "2018-12-25";
+    var returnDate = "2018-12-28";
+    var queryURL =
+      "https://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?apikey=" +
+      apiKey +
+      "&origin=" +
+      origin +
+      "&destination=" +
+      destination +
+      "&departure_date=" +
+      departureDate +
+      "&return_date=" +
+      returnDate +
+      "&number_of_results=5";
+
+    // TEST DATA
+    var TEST_OBJECT = [
+      {
+        itineraries: [
+          {
+            outbound: {
+              duration: "08:34"
+            }
+          }
+        ],
+        fare: {
+          total_price: "305.21"
+        }
+      },
+      {
+        itineraries: [
+          {
+            outbound: {
+              duration: "10:15"
+            }
+          }
+        ],
+        fare: {
+          total_price: "280.89"
+        }
+      },
+      {
+        itineraries: [
+          {
+            outbound: {
+              duration: "16:11"
+            }
+          }
+        ],
+        fare: {
+          total_price: "240.05"
+        }
+      },
+      {
+        itineraries: [
+          {
+            outbound: {
+              duration: "08:34"
+            }
+          }
+        ],
+        fare: {
+          total_price: "305.21"
+        }
+      },
+      {
+        itineraries: [
+          {
+            outbound: {
+              duration: "08:34"
+            }
+          }
+        ],
+        fare: {
+          total_price: "305.21"
+        }
+      }
+    ];
+    for (var i = 0; i < TEST_OBJECT.length; i++) {
+      var flightDiv = $("<div>");
+      flightDiv
+        .append("<div>Cost: " + TEST_OBJECT[i].fare.total_price)
+        .append(
+          "<div>Time: " + TEST_OBJECT[i].itineraries[0].outbound.duration
+        );
+      $("#results").append(flightDiv);
+    }
+    // AJAX CALL FLIGHT DATA, DO NOT UNCOMMENT UNTIL END OF PROJECT
+    // $.ajax({
+    //   url: queryURL,
+    //   method: "GET"
+    // }).then(function(response) {
+    //   var flights = response.results;
+
+    //   for (var i = 0; i < flights.length; i++) {
+    //     var flightDiv = $("<div>");
+    //     flightDiv
+    //       .append("<div>Cost: " + flights[i].fare.total_price)
+    //       .append("<div>Time: " + flights[i].itineraries[0].outbound.duration);
+    //     $("#results").append(flightDiv);
+    //   }
+    // });
+  });
+
   $("#raleigh-btn").on("click", function() {
     $("#results").empty();
     latitude = 35.779432;
