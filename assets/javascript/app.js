@@ -123,7 +123,7 @@ function findHotels(airports, accessToken, departureDate, returnDate) {
     departureDate +
     "&checkOutDate=" +
     returnDate +
-    "&radius=15&page[limit]=1";
+    "&radius=15";
 
   $.ajax({
     url: queryURL,
