@@ -1,20 +1,9 @@
 var map;
 var infowindow;
-
 var posLatitude;
 var posLongitude;
-
-/*
-navigator.geolocation.getCurrentPosition(showPosition);
-
-function showPosition(position) {
-  console.log(position);
-  posLatitude = position.coords.latitude;
-  posLongitude = position.coords.longitude;
-  console.log(posLatitude);
-  //console.log(posLongitude);
-}
-*/
+var origin = "";
+var dataRetrieved = 0;
 
 //Gets the latitude and longitude of user's location once the current position is located
 var getLocation = new Promise(function(resolve, reject) {
@@ -27,9 +16,10 @@ var getLocation = new Promise(function(resolve, reject) {
 getLocation.then(function(position) {
   posLatitude = position.coords.latitude;
   posLongitude = position.coords.longitude;
-  console.log(position);
   console.log(posLatitude);
   console.log(posLongitude);
+
+  getAccessToken();
 });
 
 function initMap() {
@@ -82,6 +72,49 @@ function initMap() {
   });
 }
 
+function getAccessToken() {
+  $.ajax({
+    url: "https://test.api.amadeus.com/v1/security/oauth2/token",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    method: "POST",
+    dataType: "json",
+    data: {
+      grant_type: "client_credentials",
+      client_id: "2TqxmYIjBHdCQixlwlgBMpnD2uCA4IPi",
+      client_secret: "oabpCuBYyfpcRGsa"
+    },
+    success: function(response) {
+      console.log(response.expires_in);
+      // return response.access_token;
+
+      findStartAirport(posLatitude, posLongitude, response.access_token);
+    },
+    error: function() {
+      alert("Error with getting access token");
+    }
+  });
+}
+
+function findStartAirport(lat, lng, accessToken) {
+  var queryURL =
+    "https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude=" +
+    +lat +
+    "&longitude=" +
+    lng +
+    "&page[limit]=4";
+  $.ajax({
+    url: queryURL,
+    headers: {
+      Authorization: "Bearer " + accessToken
+    },
+    method: "GET"
+  }).then(function(response) {
+    origin = response.data[0].iataCode;
+  });
+}
+
 function findNearestAirports(lat, lng, accessToken) {
   var queryURL =
     "https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude=" +
@@ -113,7 +146,6 @@ function findNearestAirports(lat, lng, accessToken) {
 }
 
 function findFlights(airports, accessToken, departureDate, returnDate) {
-  var origin = "RDU";
   var destination = airports[0].airportCode;
 
   var max = 5;
@@ -137,7 +169,21 @@ function findFlights(airports, accessToken, departureDate, returnDate) {
     },
     method: "GET"
   }).then(function(response) {
+    var flights = response.data;
+    for (var i = 0; i < flights.length; i++) {
+      DISPLAY_DATA.flights.push({
+        airline:
+          flights[i].offerItems[0].services[0].segments[0].flightSegment
+            .carrierCode,
+        price: flights[i].offerItems[0].price.total,
+        departureTime:
+          flights[i].offerItems[0].services[0].segments[0].flightSegment
+            .departure.at,
+        layovers: flights[i].offerItems[0].services[0].segments.length
+      });
+    }
     console.log(response);
+    updateData();
   });
 }
 
@@ -159,8 +205,33 @@ function findHotels(airports, accessToken, departureDate, returnDate) {
     },
     method: "GET"
   }).then(function(response) {
+    var hotels = response.data;
+    var hotelLength = 0;
+    if (hotels.length > 5) {
+      hotelLength = 5;
+    } else {
+      hotelLength = hotels.length;
+    }
+    for (var i = 0; i < hotelLength; i++) {
+      DISPLAY_DATA.hotels.push({
+        hotel: hotels[i].hotel.name,
+        price: hotels[i].offers[0].price.total,
+        stars: hotels[i].hotel.rating,
+        beds: hotels[i].offers[0].room.type
+      });
+    }
     console.log(response);
+    updateData();
   });
+}
+
+function updateData() {
+  dataRetrieved++;
+
+  if (dataRetrieved === 2) {
+    console.log("READY");
+    localStorage.setItem("DATA", JSON.stringify(DISPLAY_DATA));
+  }
 }
 
 function callback(results, status) {
@@ -191,20 +262,25 @@ function createMarker(place) {
 var TEST_DATA = {
   flights: [
     {
-      price: 200,
       airline: "American Airlines",
+      price: 200,
       departureTime: "2:34 PM",
       layovers: "Non-stop"
     }
   ],
   hotels: [
     {
-      price: 100,
       hotel: "Motel 6",
+      price: 100,
       stars: "2-star",
       beds: "1 queen bed"
     }
   ]
+};
+
+var DISPLAY_DATA = {
+  flights: [],
+  hotels: []
 };
 
 $(document).ready(function() {
