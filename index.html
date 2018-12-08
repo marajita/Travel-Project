@@ -7,12 +7,22 @@
     <!-- jQuery script -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Site script -->
-    <script src="assets/javascript/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-yDQU-uSriZIt8_OIzTrcqvcBK2l_2v0&libraries=places&callback=initMap"
       async
       defer
     ></script>
+    <script src="assets/javascript/app.js"></script>
+
+    <!-- Semantic UI -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
+    />
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+
     <title>DART</title>
 
     <!--
@@ -22,26 +32,77 @@
       /* Always set the map height explicitly to define the size of the div
          * element that contains the map. */
       #map {
-        height: 500px;
-        width: 930px;
+        height: 600px;
+        width: 660px;
       }
       /* Optional: Makes the sample page fill the window. */
-      html,
+      /* html,
       body {
         height: 100%;
         margin: 0;
         padding: 0;
-      }
+      } */
     </style>
   </head>
   <body>
-    <div id="map"></div>
-    <div id="buttons">
-      <button id="raleigh-btn">Raleigh</button>
-      <button id="new-york-btn">New York</button>
-      <button id="los-angeles-btn">Los Angeles</button>
-      <button id="flights-test-btn">Flights (RDU to LAX test)</button>
+    <!-- <div id="map"></div> -->
+    <!--
+      <div id="buttons">
+        <button id="raleigh-btn">Raleigh</button>
+        <button id="new-york-btn">New York</button>
+        <button id="los-angeles-btn">Los Angeles</button>
+        <button id="flights-test-btn">Flights (RDU to LAX test)</button>
+      </div>
+
+      <div class="ui icon input">
+        <input type="text" placeholder="Search..." />
+        <i class="circular search link icon"></i>
+      </div>
+
+      <div id="results">Results:</div>
+    -->
+    <div class="pusher">
+      <div class="ui inverted vertical masthead center aligned segment">
+        <div class="ui text container">
+          <div class="ui inverted huge header">DART</div>
+        </div>
+        <br />
+        <div class="ui stackable two column divided grid container">
+          <div class="row">
+            <div class="four wide column">
+              <div class="ui segment">
+                <div>
+                  <div class="ui icon input">
+                    <input
+                      id="searchField"
+                      type="text"
+                      placeholder="Search..."
+                    />
+                    <i id="search" class="circular search link icon"></i>
+                  </div>
+
+                  <div id="results">Results:</div>
+                </div>
+              </div>
+            </div>
+            <div class="ten wide column">
+              <div class="ui segment">
+                <div>
+                  <div id="map"></div>
+                  <div id="buttons">
+                    <button id="raleigh-btn">Raleigh</button>
+                    <button id="new-york-btn">New York</button>
+                    <button id="los-angeles-btn">Los Angeles</button>
+                    <button id="flights-test-btn">
+                      Flights (RDU to LAX test)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="results">Results:</div>
   </body>
 </html>
