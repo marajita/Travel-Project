@@ -209,4 +209,44 @@ $(document).ready(function() {
       callback
     );
   });
+
+  // Rajita changes
+  $("#search").on("click", function() {
+    var city = $("#searchField").val();
+    console.log(city);
+    var queryURL =
+      "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+      city +
+      "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
+    console.log(queryURL);
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+      console.log(response);
+      var results = response.results;
+      console.log(results);
+      console.log(results[0].geometry.location);
+
+      $("#results").empty();
+      //lat and lng of the city
+
+      //copied from above
+      var zoomLocation = results[0].geometry.location;
+      map.setZoom(14);
+      map.panTo(zoomLocation);
+
+      infowindow = new google.maps.InfoWindow();
+      var service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(
+        {
+          location: zoomLocation,
+          radius: 500,
+          type: ["lodging"]
+        },
+        callback
+      );
+    });
+  });
+  //
 });
