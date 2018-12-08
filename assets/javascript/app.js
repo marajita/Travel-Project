@@ -4,6 +4,37 @@ var numResults = 8;
 var map;
 var infowindow;
 
+var posLatitude;
+var posLongitude;
+
+/*
+navigator.geolocation.getCurrentPosition(showPosition);
+
+function showPosition(position) {
+  console.log(position);
+  posLatitude = position.coords.latitude;
+  posLongitude = position.coords.longitude;
+  console.log(posLatitude);
+  //console.log(posLongitude);
+}
+*/
+
+//Gets the latitude and longitude of user's location once the current position is located
+var getLocation = new Promise(function(resolve, reject) {
+  function showPosition(position) {
+    resolve(position);
+  }
+  navigator.geolocation.getCurrentPosition(showPosition);
+});
+
+getLocation.then(function(position) {
+  posLatitude = position.coords.latitude;
+  posLongitude = position.coords.longitude;
+  console.log(position);
+  console.log(posLatitude);
+  console.log(posLongitude);
+});
+
 function initMap() {
   var raleigh = { lat: latitude, lng: longitude };
 
