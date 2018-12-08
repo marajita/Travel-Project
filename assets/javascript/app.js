@@ -1,12 +1,8 @@
-var latitude = 0;
-var longitude = 0;
-var numResults = 8;
 var map;
 var infowindow;
 
 function initMap() {
-  var raleigh = { lat: latitude, lng: longitude };
-  var geocoder = new google.maps.Geocoder();
+  var raleigh = { lat: 0, lng: 0 };
   map = new google.maps.Map(document.getElementById("map"), {
     center: raleigh,
     zoom: 2
@@ -160,6 +156,64 @@ function createMarker(place) {
     infowindow.open(map, this);
   });
 }
+
+var TEST_DATA = {
+  flights: [
+    {
+      price: 200,
+      airline: "American Airlines",
+      departureTime: "2:34 PM",
+      layovers: "Non-stop"
+    }
+  ],
+  hotels: [
+    {
+      price: 100,
+      hotel: "Motel 6",
+      stars: "2-star",
+      beds: "1 queen bed"
+    }
+  ]
+};
+
 $(document).ready(function() {
-  // TEST BUTTON CLICK EVENTS REMOVED
+  // Rajita changes
+  $("#search").on("click", function() {
+    var city = $("#searchField").val();
+    console.log(city);
+    var queryURL =
+      "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+      city +
+      "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
+    console.log(queryURL);
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+      console.log(response);
+      var results = response.results;
+      console.log(results);
+      console.log(results[0].geometry.location);
+
+      $("#results").empty();
+      //lat and lng of the city
+
+      //copied from above
+      var zoomLocation = results[0].geometry.location;
+      map.setZoom(14);
+      map.panTo(zoomLocation);
+
+      infowindow = new google.maps.InfoWindow();
+      var service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(
+        {
+          location: zoomLocation,
+          radius: 500,
+          type: ["lodging"]
+        },
+        callback
+      );
+    });
+  });
+  //
 });
