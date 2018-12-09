@@ -262,7 +262,8 @@ function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     center: raleigh,
     zoom: 2,
-    styles: style
+    styles: style,
+    disableDefaultUI: true
   });
 
   map.addListener("click", function(event) {
@@ -502,6 +503,30 @@ var TEST_DATA = {
       price: 200,
       departureTime: "2:34 PM",
       layovers: "Non-stop"
+    },
+    {
+      price: 500,
+      airline: "United",
+      departureTime: "12:34 PM",
+      layovers: "Non-stop"
+    },
+    {
+      price: 1500,
+      airline: "Frontier",
+      departureTime: "11:34 PM",
+      layovers: "Non-stop"
+    },
+    {
+      price: 550,
+      airline: "JetBlue",
+      departureTime: "04:34 PM",
+      layovers: "Non-stop"
+    },
+    {
+      price: 560,
+      airline: "Delta",
+      departureTime: "06:34 PM",
+      layovers: "Charlotte"
     }
   ],
   hotels: [
@@ -510,6 +535,12 @@ var TEST_DATA = {
       price: 100,
       stars: "2-star",
       beds: "1 queen bed"
+    },
+    {
+      price: 110,
+      hotel: "Holiday Inn",
+      stars: "4-star",
+      beds: "2 queen beds"
     }
   ]
 };
@@ -561,45 +592,29 @@ $(document).ready(function() {
       $(".ui-segment").hide();
     });
   });
+  var flightData = TEST_DATA.flights;
+  for (var i = 0; i < flightData.length; i++) {
+    var newRow = $("<tr>");
+    newRow.append("<td>" + flightData[i].airline + "</td>");
+    $("#flight").append(newRow);
+    newRow.append("<td>" + flightData[i].price + "</td>");
+    $("#flight").append(newRow);
+    newRow.append("<td>" + flightData[i].departureTime + "</td>");
+    $("#flight").append(newRow);
+    newRow.append("<td>" + flightData[i].layovers + "</td>");
+    $("#flight").append(newRow);
+  }
 
-  // Rajita changes
-  $("#search").on("click", function() {
-    $(".ui-segment").show();
-    var city = $("#searchField").val();
-    console.log(city);
-    var queryURL =
-      "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-      city +
-      "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
-    console.log(queryURL);
-    $.ajax({
-      url: queryURL,
-      method: "GET"
-    }).then(function(response) {
-      console.log(response);
-      var results = response.results;
-      console.log(results);
-      console.log(results[0].geometry.location);
-
-      $("#results").empty();
-      //lat and lng of the city
-
-      //copied from above
-      var zoomLocation = results[0].geometry.location;
-      map.setZoom(14);
-      map.panTo(zoomLocation);
-
-      infowindow = new google.maps.InfoWindow();
-      var service = new google.maps.places.PlacesService(map);
-      service.nearbySearch(
-        {
-          location: zoomLocation,
-          radius: 500,
-          type: ["lodging"]
-        },
-        callback
-      );
-      $(".ui-segment").hide();
-    });
-  });
+  var hotelData = TEST_DATA.hotels;
+  for (var i = 0; i < hotelData.length; i++) {
+    var newRow = $("<tr>");
+    newRow.append("<td>" + hotelData[i].hotel + "</td>");
+    $("#hotels").append(newRow);
+    newRow.append("<td>" + hotelData[i].price + "</td>");
+    $("#hotels").append(newRow);
+    newRow.append("<td>" + hotelData[i].stars + "</td>");
+    $("#hotels").append(newRow);
+    newRow.append("<td>" + hotelData[i].beds + "</td>");
+    $("#hotels").append(newRow);
+  }
 });
