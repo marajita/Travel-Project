@@ -9,12 +9,14 @@
     <!-- Site script -->
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
 
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-yDQU-uSriZIt8_OIzTrcqvcBK2l_2v0&libraries=places&callback=initMap"
-      async
-      defer
-    ></script>
-    <script src="assets/javascript/app.js"></script>
+    <!--
+      <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-yDQU-uSriZIt8_OIzTrcqvcBK2l_2v0&libraries=places&callback=initMap"
+        async
+        defer
+      ></script>
+    -->
+    <script src="assets/javascript/results.js"></script>
 
     <!-- Semantic UI -->
     <link
@@ -25,29 +27,58 @@
 
     <title>DART</title>
   </head>
+  <body>
+    <div class="ui one grid column stackable container">
+      <div class="column blue"><h1 id="total-price">price</h1></div>
+    </div>
+    <div class="ui two column doubling stackable grid container">
+      <div class="column">
+        <div class="chosen-data-flight grey">
+          <h2 id="flight-price">price</h2>
+          <table class="ui selectable table chosen-table">
+            <thead id="current-flight"></thead>
+          </table>
+        </div>
+      </div>
+      <div class="column">
+        <div class="chosen-data-hotel grey">
+          <h2 id="hotel-price">price</h2>
+          <table class="ui selectable table chosen-table">
+            <thead id="current-hotel"></thead>
+          </table>
+        </div>
+      </div>
+    </div>
 
-    <table id = "flight" class="ui selectable table">
-      <thead>
-        <tr>
-          <th>Airline Name</th>
-          <th>Price</th>
-          <th>Destination Time</th>
-          <th>Layovers</th>
-        </tr>
-      </thead>
-      <tbody id = "flightTable"></tbody>
-    </table>
-    <br>
-
-    <table id = "hotels"class="ui selectable table">
-            <thead>
-              <tr>
-                <th>Hotel Name</th>
-                <th>Price</th>
-                <th>Star</th>
-                <th>No. of Beds</th>
-              </tr>
-            </thead>
-        <tbody id = "hotelTable"></tbody>
-  </head>
+    <div class="ui two column grid container">
+      <div class="column black">
+        <h3>Flights</h3>
+        <table id="flight" class="ui selectable table">
+          <thead id="flight-table">
+            <tr>
+              <th>Airline</th>
+              <th>Price</th>
+              <th>Departure Time</th>
+              <th>Layovers</th>
+            </tr>
+          </thead>
+          <!-- <tbody id="flightTable"></tbody> -->
+        </table>
+      </div>
+      <div class="column black">
+        <h3>Hotels</h3>
+        <table id="hotels" class="ui selectable table">
+          <thead id="hotel-table">
+            <tr>
+              <th>Hotel</th>
+              <th>Price</th>
+              <th>Rating</th>
+              <th>No. of Beds</th>
+            </tr>
+          </thead>
+          <!-- <tbody id="hotelTable"></tbody> -->
+        </table>
+      </div>
+    </div>
+  </body>
 </html>
