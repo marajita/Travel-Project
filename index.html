@@ -30,79 +30,31 @@
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
     <title>DART</title>
-
-    <!--
-      !!! DELETE STYLE TAG WHEN CSS FILE IS UP, JUST FOR TESTING PURPOSES !!!
-    -->
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-         * element that contains the map. */
-      #map {
-        height: 600px;
-        width: 660px;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      /* html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      } */
-    </style>
   </head>
   <body>
-    <!-- <div id="map"></div> -->
-    <!--
-      <div id="buttons">
-        <button id="raleigh-btn">Raleigh</button>
-        <button id="new-york-btn">New York</button>
-        <button id="los-angeles-btn">Los Angeles</button>
-        <button id="flights-test-btn">Flights (RDU to LAX test)</button>
-      </div>
-
-      <div class="ui icon input">
-        <input type="text" placeholder="Search..." />
-        <i class="circular search link icon"></i>
-      </div>
-
-      <div id="results">Results:</div>
-    -->
     <div class="pusher">
       <div class="ui inverted vertical masthead center aligned segment">
         <div class="ui text container">
           <div class="ui inverted huge header">DART</div>
         </div>
         <br />
-        <div class="ui stackable two column divided grid container">
-          <div class="row">
-            <div class="four wide column">
-              <div class="ui segment">
-                <div>
-                  <div class="ui icon input">
-                    <input
-                      id="searchField"
-                      type="text"
-                      placeholder="Search..."
-                    />
-                    <i id="search" class="circular search link icon"></i>
-                  </div>
+        <div class="ui icon input">
+            <input id="searchField" type="text" placeholder="Search..." />
+            <i id="search" class="circular search link icon"></i>
+          </div>
 
-                  <div id="results">Results:</div>
-                </div>
-              </div>
+          <div class="ui right labeled input">
+              <label for="amount" class="ui label">$</label>
+              <input type="text" placeholder="Your Budget" id="amount">
+              <div class="ui basic label">.00</div>
             </div>
+            <div class="ui input">
+                <input type="text" placeholder="Search...">
+              </div>
             <div class="ten wide column">
               <div class="ui segment">
                 <div>
                   <div id="map"></div>
-                  <div id="buttons">
-                    <button id="raleigh-btn">Raleigh</button>
-                    <button id="new-york-btn">New York</button>
-                    <button id="los-angeles-btn">Los Angeles</button>
-                    <button id="flights-test-btn">
-                      Flights (RDU to LAX test)
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>

@@ -3,5 +3,14 @@ body {
 }
 
 .ui.segment {
-  background: grey;
+  background: black;
+  margin-top: 20px;
+}
+#map {
+  height: 500px;
+  width: 100%;
+}
+.ui.stackable {
+  margin-top: 5rem;
+  margin: 20px;
 }
