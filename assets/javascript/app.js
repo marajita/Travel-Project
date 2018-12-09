@@ -5,6 +5,7 @@ var posLongitude;
 var origin = "";
 var dataRetrieved = 0;
 
+//$(".ui-segment").hide();
 //Adds one month
 var oneMonth = moment()
   .add(1, "months")
@@ -550,8 +551,10 @@ var DISPLAY_DATA = {
 };
 
 $(document).ready(function() {
+  $(".ui-segment").hide();
   // Rajita changes
   $("#search").on("click", function() {
+    $(".ui-segment").show();
     var city = $("#searchField").val();
     console.log(city);
     var queryURL =
@@ -586,6 +589,7 @@ $(document).ready(function() {
         },
         callback
       );
+      $(".ui-segment").hide();
     });
   });
   var flightData = TEST_DATA.flights;
