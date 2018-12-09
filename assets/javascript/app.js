@@ -6,13 +6,16 @@ var origin = "";
 var dataRetrieved = 0;
 
 //Adds one month
-function addOneMonth() {
-  return moment()
-    .add(1, "months")
-    .format("YYYY-MM-DD");
-}
-var oneMonth = addOneMonth();
+var oneMonth = moment()
+  .add(1, "months")
+  .format("YYYY-MM-DD");
 console.log(oneMonth);
+
+var oneMonthFourDays = moment()
+  .add(1, "months")
+  .add(4, "days")
+  .format("YYYY-MM-DD");
+console.log(oneMonthFourDays);
 
 //Gets the latitude and longitude of user's location once the current position is located
 var getLocation = new Promise(function(resolve, reject) {
@@ -31,7 +34,7 @@ getLocation.then(function(position) {
   getAccessToken();
 });
 
-//JSON object for map
+//JSON object for map (Alex)
 var style = [
   {
     elementType: "geometry",
