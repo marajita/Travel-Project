@@ -6,23 +6,6 @@ var origin = "";
 var dataRetrieved = 0;
 var accessToken = "";
 
-//Gets the latitude and longitude of user's location once the current position is located
-var getLocation = new Promise(function(resolve, reject) {
-  function showPosition(position) {
-    resolve(position);
-  }
-  navigator.geolocation.getCurrentPosition(showPosition);
-});
-
-getLocation.then(function(position) {
-  posLatitude = position.coords.latitude;
-  posLongitude = position.coords.longitude;
-  console.log(posLatitude);
-  console.log(posLongitude);
-
-  getAccessToken();
-});
-
 //JSON object for map (Alex)
 var style = [
   {
@@ -301,6 +284,7 @@ function findStartAirport(lat, lng, accessToken) {
     method: "GET"
   }).then(function(response) {
     origin = response.data[0].iataCode;
+    $("#from-input").val(origin);
   });
 }
 
@@ -308,7 +292,7 @@ function setDestination(lat, long) {
   $(".ui-segment").show();
   // AJAX CALL CHAIN TRIGGERED HERE, DO NOT UNCOMMENT
   // #region DO_NOT_UNCOMMENT
-  findNearestAirports(lat, long, accessToken);
+  // findNearestAirports(lat, long, accessToken);
   // #endregion
 }
 
@@ -509,22 +493,45 @@ var DISPLAY_DATA = {
 $(document).ready(function() {
   $(".ui-segment").hide();
 
-  $("#search").on("click", function() {
-    var city = $("#searchField").val();
-    var queryURL =
-      "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-      city +
-      "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
-    $.ajax({
-      url: queryURL,
-      method: "GET"
-    }).then(function(response) {
-      var results = response.results;
-
-      var zoomLocation = results[0].geometry.location;
-      map.setZoom(5);
-      map.panTo(zoomLocation);
-      setDestination(zoomLocation.lat, zoomLocation.lng);
+  $("#location-services").on("click", function() {
+    //Gets the latitude and longitude of user's location once the current position is located
+    var getLocation = new Promise(function(resolve, reject) {
+      function showPosition(position) {
+        resolve(position);
+      }
+      navigator.geolocation.getCurrentPosition(showPosition);
     });
+
+    getLocation.then(function(position) {
+      posLatitude = position.coords.latitude;
+      posLongitude = position.coords.longitude;
+      console.log(posLatitude);
+      console.log(posLongitude);
+      getAccessToken();
+    });
+  });
+
+  $("#search").on("click", function() {
+    var city = $("#searchField")
+      .val()
+      .trim();
+    $("#searchField").val(city);
+    if (city != null || city != "") {
+      var queryURL =
+        "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+        city +
+        "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function(response) {
+        var results = response.results;
+
+        var zoomLocation = results[0].geometry.location;
+        map.setZoom(5);
+        map.panTo(zoomLocation);
+        setDestination(zoomLocation.lat, zoomLocation.lng);
+      });
+    }
   });
 });

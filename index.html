@@ -16,6 +16,12 @@
       defer
     ></script>
 
+    <!-- Link to Google Font Righteous -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Righteous"
+      rel="stylesheet"
+    />
+
     <!-- Link to Moment.js -->
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
 
@@ -35,39 +41,52 @@
     <div class="pusher">
       <div class="ui inverted vertical masthead center aligned segment">
         <div class="ui text container">
-          <div class="ui inverted huge header">DART</div>
+          <div class="ui inverted huge header title">DART <br /></div>
         </div>
         <br />
         <div class="ui icon input">
-            <input id="searchField" type="text" placeholder="Search..." />
-            <i id="search" class="circular search link icon"></i>
-          </div>
-
-          <div class="ui right labeled input">
-              <label for="amount" class="ui label">$</label>
-              <input type="text" placeholder="Your Budget" id="amount">
-              <div class="ui basic label">.00</div>
-            </div>
-            <div class="ui input">
-                <input type="text" placeholder="Search...">
-              </div>
-            <div class="ten wide column">
-              <div class="ui segment">
-                <div>
-                  <div id="map"></div>
-                </div>
-              </div>
-            </div>
+          <input
+            class="input-style"
+            type="text"
+            id="from-input"
+            placeholder="From..."
+          />
+          <i
+            id="location-services"
+            class="icon crosshairs inverted circular link"
+          ></i>
+        </div>
+        <div class="ui icon input">
+          <input
+            class="input-style"
+            id="searchField"
+            type="text"
+            placeholder="To..."
+          />
+        </div>
+        <div class="ui input">
+          <input
+            class="input-style"
+            type="number"
+            min="0"
+            step="10"
+            placeholder="Budget..."
+          />
+        </div>
+        <button class="ui inverted olive button" id="search">Search</button>
+        <button class="ui inverted olive button">Throw A Dart</button>
+        <br /><br />
+        <div class="ten wide column">
+          <div class="ui segment">
+            <div><div id="map"></div></div>
           </div>
         </div>
       </div>
     </div>
-    <!--Loading Screen-->
+    <!-- Loading Screen -->
     <div class="ui-segment">
       <p></p>
-      <div class="ui active dimmer">
-        <div class="ui loader">
-      </div>
+      <div class="ui active dimmer"><div class="ui loader"></div></div>
     </div>
   </body>
 </html>
