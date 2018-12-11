@@ -15,11 +15,6 @@ body {
   margin: 20px;
 }
 
-/* new stuff */
-.green {
-  /* background: green; */
-  height: 200px;
-}
 h1 {
   text-align: center;
   font-size: 80px;
@@ -48,4 +43,41 @@ h2 {
 .chosen-data-hotel {
   padding: 1rem;
   background: grey;
+}
+button {
+  border-radius: 0px !important;
+}
+input::placeholder {
+  font-style: italic;
+}
+.input-style {
+  margin: 5px 10px !important;
+  background: #1a1b1c !important;
+  border: none !important;
+  border-bottom: 1px solid white !important;
+  color: white !important;
+  border-radius: 0px !important;
+}
+.input-style:focus {
+  border: none !important;
+  border-bottom: 1px solid #d8ee4c !important;
+}
+#location-services {
+  margin: 4px;
+  background: #ffffff40 !important;
+}
+.title {
+  font-family: "Righteous", cursive !important;
+  font-size: 64px !important;
+  position: relative;
+  top: 151px;
+  left: -61px;
+  text-shadow: 3px 3px black;
+}
+.title-div {
+  margin-top: -125px;
+}
+.logo-image {
+  width: 180px;
+  height: 100%;
 }

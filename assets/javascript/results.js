@@ -134,6 +134,7 @@ function updateData() {
 }
 
 $(document).ready(function() {
+  // TEST_DATA = JSON.parse(localStorage.getItem("DATA"));
   updateData();
 
   $(".flight-row").on("click", function() {
