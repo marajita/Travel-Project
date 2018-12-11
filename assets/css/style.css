@@ -44,7 +44,9 @@ h2 {
   padding: 1rem;
   background: grey;
 }
-
+button {
+  border-radius: 0px !important;
+}
 input::placeholder {
   font-style: italic;
 }
@@ -66,5 +68,16 @@ input::placeholder {
 }
 .title {
   font-family: "Righteous", cursive !important;
-  font-size: 50px !important;
+  font-size: 64px !important;
+  position: relative;
+  top: 151px;
+  left: -61px;
+  text-shadow: 3px 3px black;
+}
+.title-div {
+  height: 160px !important;
+}
+.logo-image {
+  width: 180px;
+  height: 100%;
 }
