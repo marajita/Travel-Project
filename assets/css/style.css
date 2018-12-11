@@ -75,7 +75,7 @@ input::placeholder {
   text-shadow: 3px 3px black;
 }
 .title-div {
-  height: 160px !important;
+  margin-top: -125px;
 }
 .logo-image {
   width: 180px;
