@@ -8,7 +8,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Site script -->
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-
+    <!-- Firebase Reference -->
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
     <!-- Link to Google Maps (Styler) -->
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-yDQU-uSriZIt8_OIzTrcqvcBK2l_2v0&libraries=places&callback=initMap"
@@ -32,6 +33,13 @@
     <title>DART</title>
   </head>
   <body>
+    <div class="container">
+      <input id="txtEmail" type="name" placeholder="Email">
+      <input id="txtPassword" type="password" placeholder="Password">
+      <button id="btnLogIn" class="btn-action">Log In</button>
+      <button id="btnLogOut" class="btn-action">Log Out</button>
+      <button id="btnSignUp" class="btn-secondary">Sign Up</button>
+    </div>
     <div class="pusher">
       <div class="ui inverted vertical masthead center aligned segment">
         <div class="ui text container">

@@ -1,3 +1,84 @@
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyC3Bnvip6bvt2gN9kUa2FOiRvSaYfIisyk",
+  authDomain: "my-first-project-dca58.firebaseapp.com",
+  databaseURL: "https://my-first-project-dca58.firebaseio.com",
+  projectId: "my-first-project-dca58",
+  storageBucket: "my-first-project-dca58.appspot.com",
+  messagingSenderId: "197544299923"
+};
+firebase.initializeApp(config);
+
+// Create a variable to reference the database
+var database = firebase.database();
+
+const auth = firebase.auth;
+const emailAuth = new auth.EmailAuthProvider();
+/*
+auth.signInWithNameAndPassword(name, pass);
+auth.createUserWithNameAndPassword(name, pass);
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("path/to/serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://my-first-project-dca58.firebaseio.com"
+});
+
+*/
+
+// $("#btnLogIn").on("click", function() {
+//   var userEmail = $("#txtEmail").val();
+//   var userPassword = $("#txtPassword").val();
+//   firebase
+//     .auth()
+//     .signInWithEmailAndPassword(userEmail, userPassword)
+//     .catch(function(error) {
+//       // Handle Errors here.
+//       var errorCode = error.code;
+//       var errorMessage = error.message;
+//       // ...
+//     });
+//   const promise = auth.signInWithNameAndPassword(userEmail, userPassword);
+//   promise.catch(e => console.log(e.message));
+// });
+
+// $("#btnLogOut").on("click", function() {
+//   firebase
+//     .auth()
+//     .signOut()
+//     .then(function() {
+//       // Sign-out successful.
+//     })
+//     .catch(function(error) {
+//       // An error happened.
+//     });
+// });
+
+// $("#btnSignUp").on("click", function() {
+//   var userEmail = $("#txtEmail").val();
+//   var userPassword = $("#txtPassword").val();
+//   firebase
+//     .auth()
+//     .createUserWithEmailAndPassword(userEmail, userPassword)
+//     .then(function(response) {
+//       console.log(response);
+//     })
+//     .catch(function(error) {
+//       // Handle Errors here.
+//       var errorCode = error.code;
+//       var errorMessage = error.message;
+//       console.log("Something Went Wrong.");
+//       // ...
+//     });
+//   /*
+//   const promise = auth.createUserWithNameAndPassword(userEmail, userPassword);
+//   promise.catch(e => console.log(e.message));
+//   */
+// });
+
 var map;
 var infowindow;
 var posLatitude;
@@ -551,6 +632,60 @@ var DISPLAY_DATA = {
 };
 
 $(document).ready(function() {
+  $("#btnLogIn").on("click", function() {
+    var userEmail = $("#txtEmail").val();
+    var userPassword = $("#txtPassword").val();
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(userEmail, userPassword)
+      .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode);
+        console.log(errorMessage);
+        // ...
+      });
+    const promise = auth.signInWithNameAndPassword(userEmail, userPassword);
+    promise.catch(e => console.log(e.message));
+  });
+
+  $("#btnLogOut").on("click", function() {
+    firebase
+      .auth()
+      .signOut()
+      .then(function() {
+        // Sign-out successful.
+      })
+      .catch(function(error) {
+        // An error happened.
+      });
+  });
+
+  $("#btnSignUp").on("click", function() {
+    var userEmail = $("#txtEmail").val();
+    var userPassword = $("#txtPassword").val();
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(userEmail, userPassword)
+      .then(function(response) {
+        console.log(response);
+      })
+      .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode);
+        console.log(error.Message);
+        console.log("Something Went Wrong");
+        // ...
+      });
+    /*
+    const promise = auth.createUserWithNameAndPassword(userEmail, userPassword);
+    promise.catch(e => console.log(e.message));
+    */
+  });
+
   $(".ui-segment").hide();
   // Rajita changes
   $("#search").on("click", function() {
