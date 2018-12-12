@@ -82,9 +82,13 @@ function updateChosenFlight(id) {
   var newRow = $("<tr>");
   newRow
     .addClass("chosen-row")
-    .append("<td>" + TEST_DATA.flights[id].airline + "</td>")
-    .append("<td>" + TEST_DATA.flights[id].departureTime + "</td>")
-    .append("<td>" + TEST_DATA.flights[id].layovers + "</td>");
+    .append("<th class='chosen-th'>" + TEST_DATA.flights[id].airline + "</th>")
+    .append(
+      "<th class='chosen-th'>" + TEST_DATA.flights[id].departureTime + "</th>"
+    )
+    .append(
+      "<th class='chosen-th'>" + TEST_DATA.flights[id].layovers + "</th>"
+    );
   $("#current-flight").append(newRow);
   chosenFlightPrice = TEST_DATA.flights[id].price;
   updateTotalPrice();
@@ -96,9 +100,9 @@ function updateChosenHotel(id) {
   var newRow = $("<tr>");
   newRow
     .addClass("chosen-row")
-    .append("<td>" + TEST_DATA.hotels[id].hotel + "</td>")
-    .append("<td>" + TEST_DATA.hotels[id].stars + "</td>")
-    .append("<td>" + TEST_DATA.hotels[id].beds + "</td>");
+    .append("<th class='chosen-th'>" + TEST_DATA.hotels[id].hotel + "</th>")
+    .append("<th class='chosen-th'>" + TEST_DATA.hotels[id].stars + "</th>")
+    .append("<th class='chosen-th'>" + TEST_DATA.hotels[id].beds + "</th>");
   $("#current-hotel").append(newRow);
   chosenHotelPrice = TEST_DATA.hotels[id].price;
   updateTotalPrice();
@@ -134,7 +138,7 @@ function updateData() {
 }
 
 $(document).ready(function() {
-  // TEST_DATA = JSON.parse(localStorage.getItem("DATA"));
+  TEST_DATA = JSON.parse(localStorage.getItem("DATA"));
   updateData();
 
   $(".flight-row").on("click", function() {

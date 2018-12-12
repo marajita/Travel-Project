@@ -306,7 +306,7 @@ function findStartAirport(lat, lng) {
   }).then(function(response) {
     origin = response.data[0].iataCode;
     $("#from-input").val(origin);
-    updateLocations();
+    updateLocations(response.data[0].iataCode);
   });
 }
 
@@ -336,7 +336,7 @@ function findNearestAirports(lat, lng) {
     airportCode = airports[0].iataCode;
     cityCode = airports[0].address.cityCode;
     $("#searchField").val(airportCode);
-    updateLocations();
+    updateLocations(airportCode);
   });
 }
 
@@ -346,7 +346,7 @@ function findFlights(destination, departureDate, returnDate) {
     "https://test.api.amadeus.com/v1/shopping/flight-offers?origin=" +
     origin +
     "&destination=" +
-    destination +
+    airportCode +
     "&departureDate=" +
     departureDate +
     "&returnDate=" +
@@ -380,7 +380,7 @@ function findFlights(destination, departureDate, returnDate) {
   });
 }
 
-function findHotels(cityCode, departureDate, returnDate) {
+function findHotels(city, departureDate, returnDate) {
   var queryURL =
     "https://test.api.amadeus.com/v1/shopping/hotel-offers?cityCode=" +
     cityCode +
@@ -425,14 +425,15 @@ function updateData() {
     localStorage.setItem("DATA", JSON.stringify(DISPLAY_DATA));
     $(".ui-segment").hide();
 
-    // window.location.href = "result.html";
+    window.location.href = "result.html";
   }
 }
 
-function updateLocations(airportCode, cityCode) {
+function updateLocations(location) {
+  console.log(location);
   locationsRetrieved++;
 
-  if (locationsRetrieved === 2) {
+  if (origin != "" && airportCode != "") {
     var oneMonth = moment()
       .add(1, "months")
       .format("YYYY-MM-DD");
@@ -441,6 +442,7 @@ function updateLocations(airportCode, cityCode) {
       .add(4, "days")
       .format("YYYY-MM-DD");
     console.log("START AJAX CHAIN HERE");
+    // $(".ui-segment").show();
     // findFlights(airportCode, oneMonth, oneMonthFourDays);
     // findHotels(cityCode, oneMonth, oneMonthFourDays);
   }
@@ -590,6 +592,10 @@ $(document).ready(function() {
 
   $(".ui-segment").hide();
 
+  $("#close-warning").on("click", function() {
+    $(".warning-msg").hide();
+  });
+
   $("#location-services").on("click", function() {
     //Gets the latitude and longitude of user's location once the current position is located
     var getLocation = new Promise(function(resolve, reject) {
@@ -606,16 +612,30 @@ $(document).ready(function() {
     });
   });
 
+  $("input").on("click", function() {
+    $(this).removeClass("input-missing");
+  });
+
   $("#search").on("click", function() {
     var fromInput = $("#from-input")
       .val()
       .trim();
-    findLocOnSearch(fromInput, true);
+    // $("#from-input").val(city);
     var city = $("#searchField")
       .val()
       .trim();
     $("#searchField").val(city);
-    findLocOnSearch(city, false);
+
+    if (city === "") {
+      $("#searchField").addClass("input-missing");
+    } else {
+      findLocOnSearch(city, false);
+    }
+    if (fromInput === "") {
+      $("#from-input").addClass("input-missing");
+    } else {
+      findLocOnSearch(fromInput, true);
+    }
 
     // if (city != null || city != "") {
     //   var queryURL =

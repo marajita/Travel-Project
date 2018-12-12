@@ -18,7 +18,11 @@
     -->
     <script src="assets/javascript/results.js"></script>
     <script src="assets/javascript/thingstodo.js"></script>
-
+    <!-- Link to Google Font Righteous -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Righteous"
+      rel="stylesheet"
+    />
     <!-- Semantic UI -->
     <link
       rel="stylesheet"
@@ -30,7 +34,12 @@
   </head>
   <body>
     <div class="ui one grid column stackable container">
-      <div class="column blue"><h1 id="total-price">price</h1></div>
+      <div class="column price-div">
+        <h1 id="total-price">price</h1>
+        <div class="image-div">
+          <img class="results-image" src="assets/images/globe.png" />
+        </div>
+      </div>
     </div>
     <div class="ui two column doubling stackable grid container">
       <div class="column">
@@ -50,7 +59,6 @@
         </div>
       </div>
     </div>
-
     <div class="ui two column grid container">
       <div class="column black">
         <h3>Flights</h3>

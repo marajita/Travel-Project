@@ -14,7 +14,6 @@ body {
   margin-top: 5rem;
   margin: 20px;
 }
-
 h1 {
   text-align: center;
   font-size: 80px;
@@ -23,11 +22,7 @@ h2 {
   text-align: center;
   font-size: 40px;
 }
-.flight-row:hover,
-.hotel-row:hover {
-  cursor: pointer;
-  background: rgb(197, 197, 197);
-}
+
 .chosen-row {
   background: grey;
   border: none;
@@ -38,11 +33,13 @@ h2 {
 }
 .chosen-data-flight {
   padding: 1rem;
-  background: grey;
+  color: white;
+  background: #2d2f30;
 }
 .chosen-data-hotel {
+  color: white;
   padding: 1rem;
-  background: grey;
+  background: #2d2f30;
 }
 button {
   border-radius: 0px !important;
@@ -62,6 +59,9 @@ input::placeholder {
   border: none !important;
   border-bottom: 1px solid #d8ee4c !important;
 }
+.input-missing {
+  border-bottom: 1px solid rgb(143, 5, 5) !important;
+}
 #location-services {
   margin: 4px;
   background: #ffffff40 !important;
@@ -80,4 +80,58 @@ input::placeholder {
 .logo-image {
   width: 180px;
   height: 100%;
+}
+
+/* RESULTS PAGE */
+th {
+  font-style: italic;
+  color: white !important;
+  background: #1a1b1c !important;
+}
+td {
+  border-top: 1px solid rgba(238, 232, 170, 0.247) !important;
+}
+table {
+  color: white !important;
+  border: none !important;
+  border-radius: none !important;
+}
+.flight-row,
+.hotel-row,
+.thingstodo-row {
+  background: #1a1b1c !important;
+}
+.flight-row:hover,
+.hotel-row:hover {
+  cursor: pointer;
+  background: rgb(197, 197, 197) !important;
+}
+.chosen-th {
+  background: #2d2f30 !important;
+  border: none !important;
+}
+#total-price {
+  color: white;
+  font-family: "Righteous", cursive !important;
+  width: 50%;
+  position: relative;
+  left: 25px;
+  top: 11px;
+  text-align: right;
+  z-index: 1;
+  text-shadow: 3px 3px black;
+}
+.price-div {
+  background: #3b3f41;
+}
+.results-image {
+  width: 180px;
+  height: 134%;
+  position: absolute;
+  top: -21px;
+  left: calc(50% - 74px);
+  z-index: 0;
+}
+tr {
+  background: black !important;
 }
