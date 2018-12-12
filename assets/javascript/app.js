@@ -534,6 +534,13 @@ var DISPLAY_DATA = {
 };
 
 $(document).ready(function() {
+  $("#btnSignUp").click(function() {
+    $(".signupPopup").modal("show");
+  });
+  $(".signupPopup").modal({
+    closable: true
+  });
+
   $("#btnLogIn").on("click", function() {
     var userEmail = $("#txtEmail").val();
     var userPassword = $("#txtPassword").val();

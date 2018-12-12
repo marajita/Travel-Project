@@ -39,18 +39,37 @@
     <title>DART</title>
   </head>
   <body>
-    <div class="container">
-      <input id="txtEmail" type="name" placeholder="Email">
-      <input id="txtPassword" type="password" placeholder="Password">
-      <button id="btnLogIn" class="btn-action">Log In</button>
-      <button id="btnLogOut" class="btn-action">Log Out</button>
-      <button id="btnSignUp" class="btn-secondary">Sign Up</button>
+    <header>
+      Dart
+      <button class="ui button yellow create_btn" type="button" id="btnSignUp">
+        Sign Up
+      </button>
+    </header>
+    <div class="ui modal signupPopup">
+      <i class="close icon"></i>
+      <div class="container">
+        <div class="ui inverted segment">
+          <form class="ui inverted form">
+            <div class="field">
+              <label>Email address</label>
+              <input id="txtEmail" type="email" placeholder="Email" />
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <input id="txtPassword" type="password" placeholder="Password" />
+            </div>
+            <button id="btnLogIn" class="ui button">Log In</button>
+            <button id="btnLogOut" class="ui button">Log Out</button>
+          </form>
+        </div>
+      </div>
     </div>
     <div class="pusher">
       <div class="ui inverted vertical masthead center aligned segment">
         <div class="ui text container title-div">
           <div class="ui inverted huge header title">DART<br /></div>
           <img class="logo-image" src="assets/images/globe.png" />
+          <!-- <img class="dart-image" src="assets/images/dart.png" /> -->
         </div>
         <br />
         <div class="ui icon input">
@@ -96,6 +115,15 @@
     <div class="ui-segment">
       <p></p>
       <div class="ui active dimmer"><div class="ui loader"></div></div>
+    </div>
+    <div id="footer" class="ui inverted vertical footer segment form-page">
+      <div class="ui container">
+        © Copyright 2018,
+        <a href="https://github.com/AlexanderMesa">Alexander Mesa,</a>
+        <a href="https://github.com/barryriveroll">Barry Riverroll,</a>
+        <a href="https://github.com/marajita">Rajita Maharjan</a>. All Rights
+        Reserved
+      </div>
     </div>
   </body>
 </html>
