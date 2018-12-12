@@ -83,12 +83,18 @@ input::placeholder {
 }
 
 /* RESULTS PAGE */
+.total-div {
+  background: rgb(74, 76, 82);
+}
+.chosen-div {
+  margin-top: 15px !important;
+}
 th {
   font-style: italic;
   color: white !important;
   background: #1a1b1c !important;
 }
-td {
+.results-image td {
   border-top: 1px solid rgba(238, 232, 170, 0.247) !important;
 }
 table {
@@ -104,25 +110,32 @@ table {
 .flight-row:hover,
 .hotel-row:hover {
   cursor: pointer;
-  background: rgb(197, 197, 197) !important;
+  background: black !important;
 }
 .chosen-th {
   background: #2d2f30 !important;
   border: none !important;
 }
+#top-text {
+  margin: 0px;
+  padding: 20px;
+}
 #total-price {
   color: white;
   font-family: "Righteous", cursive !important;
   width: 50%;
-  position: relative;
-  left: 25px;
-  top: 11px;
+  position: absolute;
+  left: 16px;
+  top: 80px;
   text-align: right;
   z-index: 1;
   text-shadow: 3px 3px black;
 }
 .price-div {
   background: #3b3f41;
+}
+.top-margin {
+  margin-top: 65px !important;
 }
 .results-image {
   width: 180px;
@@ -134,8 +147,10 @@ table {
 }
 tr {
   background: black !important;
+}
 #footer {
   text-align: center;
+  background: black;
 }
 
 header {

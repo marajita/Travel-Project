@@ -3,6 +3,8 @@
     has a total length of 5 objects containing the data we want to display.
 */
 var TEST_DATA = {
+  from: "RDU",
+  to: "LAX",
   flights: [
     {
       airline: "American Airlines",
@@ -39,31 +41,31 @@ var TEST_DATA = {
     {
       hotel: "Motel 6",
       price: 210,
-      stars: "2-star",
+      stars: 2,
       beds: "1 queen bed"
     },
     {
       hotel: "Sheritan",
       price: 340,
-      stars: "3-star",
+      stars: 3,
       beds: "1 queen bed"
     },
     {
       hotel: "Days Inn",
       price: 360,
-      stars: "3-star",
+      stars: 3,
       beds: "1 queen bed"
     },
     {
       hotel: "Rodeway Inn",
       price: 400,
-      stars: "2-star",
+      stars: 4,
       beds: "1 queen bed"
     },
     {
       hotel: "Motel 6",
       price: 700,
-      stars: "2-star",
+      stars: 5,
       beds: "1 queen bed"
     }
   ]
@@ -97,11 +99,15 @@ function updateChosenFlight(id) {
 function updateChosenHotel(id) {
   $("#current-hotel").empty();
   $("#hotel-price").text("$" + TEST_DATA.hotels[id].price);
+  var totalStars = "";
+  for (var i = 0; i < TEST_DATA.hotels[id].stars; i++) {
+    totalStars += "<i class='icon star inverted'></i>";
+  }
   var newRow = $("<tr>");
   newRow
     .addClass("chosen-row")
     .append("<th class='chosen-th'>" + TEST_DATA.hotels[id].hotel + "</th>")
-    .append("<th class='chosen-th'>" + TEST_DATA.hotels[id].stars + "</th>")
+    .append("<th class='chosen-th'>" + totalStars + "</th>")
     .append("<th class='chosen-th'>" + TEST_DATA.hotels[id].beds + "</th>");
   $("#current-hotel").append(newRow);
   chosenHotelPrice = TEST_DATA.hotels[id].price;
@@ -126,19 +132,30 @@ function updateData() {
 
   for (var i = 0; i < TEST_DATA.hotels.length; i++) {
     var newRow = $("<tr>");
+    var totalStars = "";
+    for (var j = 0; j < TEST_DATA.hotels[i].stars; j++) {
+      totalStars += "<i class='icon star inverted'></i>";
+    }
     newRow
       .addClass("hotel-row")
       .attr("id", i)
       .append("<td>" + TEST_DATA.hotels[i].hotel + "</td>")
       .append("<td>" + TEST_DATA.hotels[i].price + "</td>")
-      .append("<td>" + TEST_DATA.hotels[i].stars + "</td>")
+      .append("<td>" + totalStars + "</td>")
       .append("<td>" + TEST_DATA.hotels[i].beds + "</td>");
     $("#hotel-table").append(newRow);
   }
 }
 
 $(document).ready(function() {
-  TEST_DATA = JSON.parse(localStorage.getItem("DATA"));
+  // TEST_DATA = JSON.parse(localStorage.getItem("DATA"));
+  $("#top-text").text(
+    "Round-trip from " +
+      TEST_DATA.from +
+      " to " +
+      TEST_DATA.to +
+      ", for four nights"
+  );
   updateData();
 
   $(".flight-row").on("click", function() {
