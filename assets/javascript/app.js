@@ -261,7 +261,10 @@ function initMap() {
   map.addListener("click", function(event) {
     map.setZoom(5);
     map.panTo({ lat: event.latLng.lat(), lng: event.latLng.lng() });
-
+    locationsRetrieved = 0;
+    if (origin != "") {
+      locationsRetrieved++;
+    }
     findNearestAirports(event.latLng.lat(), event.latLng.lng());
   });
 }
@@ -624,6 +627,7 @@ $(document).ready(function() {
   });
 
   $("#search").on("click", function() {
+    locationsRetrieved = 0;
     var fromInput = $("#from-input")
       .val()
       .trim();
