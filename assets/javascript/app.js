@@ -307,9 +307,13 @@ function findStartAirport(lat, lng) {
     },
     method: "GET"
   }).then(function(response) {
-    origin = response.data[0].iataCode;
-    $("#from-input").val(origin);
-    updateLocations(response.data[0].iataCode);
+    if (response.data.length > 0) {
+      origin = response.data[0].iataCode;
+      $("#from-input").val(origin);
+      updateLocations(response.data[0].iataCode);
+    } else {
+      console.log("FAIL ORIGIN AIRPORT");
+    }
   });
 }
 
@@ -336,10 +340,14 @@ function findNearestAirports(lat, lng) {
     method: "GET"
   }).then(function(response) {
     var airports = response.data;
-    airportCode = airports[0].iataCode;
-    cityCode = airports[0].address.cityCode;
-    $("#searchField").val(airportCode);
-    updateLocations(airportCode);
+    if (airports.length > 0) {
+      airportCode = airports[0].iataCode;
+      cityCode = airports[0].address.cityCode;
+      $("#searchField").val(airportCode);
+      updateLocations(airportCode);
+    } else {
+      console.log("FAIL DESTINATION AIRPORT");
+    }
   });
 }
 
