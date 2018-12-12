@@ -20,8 +20,12 @@ var infowindow;
 var posLatitude;
 var posLongitude;
 var origin = "";
+var destination = "";
 var dataRetrieved = 0;
+var locationsRetrieved = 0;
 var accessToken = "";
+var airportCode = "";
+var cityCode = "";
 
 //JSON object for map (Alex)
 var style = [
@@ -258,7 +262,7 @@ function initMap() {
     map.setZoom(5);
     map.panTo({ lat: event.latLng.lat(), lng: event.latLng.lng() });
 
-    setDestination(event.latLng.lat(), event.latLng.lng());
+    findNearestAirports(event.latLng.lat(), event.latLng.lng());
   });
 }
 
@@ -277,8 +281,8 @@ function getAccessToken() {
     },
     success: function(response) {
       console.log(response.expires_in);
-      findStartAirport(posLatitude, posLongitude, response.access_token);
       accessToken = response.access_token;
+      // findStartAirport(posLatitude, posLongitude);
     },
     error: function() {
       alert("Error with getting access token");
@@ -286,7 +290,7 @@ function getAccessToken() {
   });
 }
 
-function findStartAirport(lat, lng, accessToken) {
+function findStartAirport(lat, lng) {
   var queryURL =
     "https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude=" +
     +lat +
@@ -302,6 +306,7 @@ function findStartAirport(lat, lng, accessToken) {
   }).then(function(response) {
     origin = response.data[0].iataCode;
     $("#from-input").val(origin);
+    updateLocations();
   });
 }
 
@@ -309,14 +314,14 @@ function setDestination(lat, long) {
   $(".ui-segment").show();
   // AJAX CALL CHAIN TRIGGERED HERE, DO NOT UNCOMMENT
   // #region DO_NOT_UNCOMMENT
-  // findNearestAirports(lat, long, accessToken);
+  // findNearestAirports(lat, long);
   // #endregion
 }
 
-function findNearestAirports(lat, lng, accessToken) {
+function findNearestAirports(lat, lng) {
   var queryURL =
     "https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude=" +
-    +lat +
+    lat +
     "&longitude=" +
     lng +
     "&page[limit]=4";
@@ -328,29 +333,14 @@ function findNearestAirports(lat, lng, accessToken) {
     method: "GET"
   }).then(function(response) {
     var airports = response.data;
-    var airportCodeArray = [];
-    for (var i = 0; i < airports.length; i++) {
-      var obj = {
-        airportCode: airports[i].iataCode,
-        cityCode: airports[i].address.cityCode
-      };
-      airportCodeArray.push(obj);
-    }
-    var oneMonth = moment()
-      .add(1, "months")
-      .format("YYYY-MM-DD");
-    var oneMonthFourDays = moment()
-      .add(1, "months")
-      .add(4, "days")
-      .format("YYYY-MM-DD");
-
-    findFlights(airportCodeArray, accessToken, oneMonth, oneMonthFourDays);
-    findHotels(airportCodeArray, accessToken, oneMonth, oneMonthFourDays);
+    airportCode = airports[0].iataCode;
+    cityCode = airports[0].address.cityCode;
+    $("#searchField").val(airportCode);
+    updateLocations();
   });
 }
 
-function findFlights(airports, accessToken, departureDate, returnDate) {
-  var destination = airports[0].airportCode;
+function findFlights(destination, departureDate, returnDate) {
   var max = 5;
   var queryURL =
     "https://test.api.amadeus.com/v1/shopping/flight-offers?origin=" +
@@ -390,8 +380,7 @@ function findFlights(airports, accessToken, departureDate, returnDate) {
   });
 }
 
-function findHotels(airports, accessToken, departureDate, returnDate) {
-  var cityCode = airports[0].cityCode;
+function findHotels(cityCode, departureDate, returnDate) {
   var queryURL =
     "https://test.api.amadeus.com/v1/shopping/hotel-offers?cityCode=" +
     cityCode +
@@ -440,6 +429,23 @@ function updateData() {
   }
 }
 
+function updateLocations(airportCode, cityCode) {
+  locationsRetrieved++;
+
+  if (locationsRetrieved === 2) {
+    var oneMonth = moment()
+      .add(1, "months")
+      .format("YYYY-MM-DD");
+    var oneMonthFourDays = moment()
+      .add(1, "months")
+      .add(4, "days")
+      .format("YYYY-MM-DD");
+    console.log("START AJAX CHAIN HERE");
+    // findFlights(airportCode, oneMonth, oneMonthFourDays);
+    // findHotels(cityCode, oneMonth, oneMonthFourDays);
+  }
+}
+
 function createMarker(place) {
   var placeLoc = place.geometry.location;
   var marker = new google.maps.Marker({
@@ -450,6 +456,26 @@ function createMarker(place) {
   google.maps.event.addListener(marker, "click", function() {
     infowindow.setContent(place.name);
     infowindow.open(map, this);
+  });
+}
+
+function findLocOnSearch(searchText, setOrigin) {
+  var queryURL =
+    "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+    searchText +
+    "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
+  $.ajax({
+    url: queryURL,
+    method: "GET"
+  }).then(function(response) {
+    var results = response.results;
+    var location = results[0].geometry.location;
+
+    if (setOrigin) {
+      findStartAirport(location.lat, location.lng);
+    } else {
+      findNearestAirports(location.lat, location.lng);
+    }
   });
 }
 
@@ -576,33 +602,38 @@ $(document).ready(function() {
     getLocation.then(function(position) {
       posLatitude = position.coords.latitude;
       posLongitude = position.coords.longitude;
-      console.log(posLatitude);
-      console.log(posLongitude);
-      getAccessToken();
+      findStartAirport(posLatitude, posLongitude);
     });
   });
 
   $("#search").on("click", function() {
+    var fromInput = $("#from-input")
+      .val()
+      .trim();
+    findLocOnSearch(fromInput, true);
     var city = $("#searchField")
       .val()
       .trim();
     $("#searchField").val(city);
-    if (city != null || city != "") {
-      var queryURL =
-        "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-        city +
-        "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
-      $.ajax({
-        url: queryURL,
-        method: "GET"
-      }).then(function(response) {
-        var results = response.results;
+    findLocOnSearch(city, false);
 
-        var zoomLocation = results[0].geometry.location;
-        map.setZoom(5);
-        map.panTo(zoomLocation);
-        setDestination(zoomLocation.lat, zoomLocation.lng);
-      });
-    }
+    // if (city != null || city != "") {
+    //   var queryURL =
+    //     "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+    //     city +
+    //     "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
+    //   $.ajax({
+    //     url: queryURL,
+    //     method: "GET"
+    //   }).then(function(response) {
+    //     var results = response.results;
+
+    //     var zoomLocation = results[0].geometry.location;
+    //     map.setZoom(5);
+    //     map.panTo(zoomLocation);
+    //     setDestination(zoomLocation.lat, zoomLocation.lng);
+    //   });
+    // }
   });
+  getAccessToken();
 });
