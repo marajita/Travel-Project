@@ -81,3 +81,19 @@ input::placeholder {
   width: 180px;
   height: 100%;
 }
+
+#footer {
+  text-align: center;
+}
+
+header {
+  background-color: black;
+  color: white;
+  padding: 5px;
+  height: 43px;
+  padding-left: 20px;
+}
+
+#btnSignUp {
+  float: right;
+}
