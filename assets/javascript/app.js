@@ -24,6 +24,8 @@ var destination = "";
 var dataRetrieved = 0;
 var locationsRetrieved = 0;
 var accessToken = "";
+var airportCode = "";
+var cityCode = "";
 
 //JSON object for map (Alex)
 var style = [
@@ -304,6 +306,7 @@ function findStartAirport(lat, lng) {
   }).then(function(response) {
     origin = response.data[0].iataCode;
     $("#from-input").val(origin);
+    updateLocations();
   });
 }
 
@@ -318,7 +321,7 @@ function setDestination(lat, long) {
 function findNearestAirports(lat, lng) {
   var queryURL =
     "https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude=" +
-    +lat +
+    lat +
     "&longitude=" +
     lng +
     "&page[limit]=4";
@@ -330,19 +333,10 @@ function findNearestAirports(lat, lng) {
     method: "GET"
   }).then(function(response) {
     var airports = response.data;
-    var airportCode = airports[0].iataCode;
-    var cityCode = airports[0].address.cityCode;
+    airportCode = airports[0].iataCode;
+    cityCode = airports[0].address.cityCode;
     $("#searchField").val(airportCode);
-    var oneMonth = moment()
-      .add(1, "months")
-      .format("YYYY-MM-DD");
-    var oneMonthFourDays = moment()
-      .add(1, "months")
-      .add(4, "days")
-      .format("YYYY-MM-DD");
-
-    // findFlights(airportCode, oneMonth, oneMonthFourDays);
-    // findHotels(cityCode, oneMonth, oneMonthFourDays);
+    updateLocations();
   });
 }
 
@@ -435,11 +429,20 @@ function updateData() {
   }
 }
 
-function updateLocations() {
+function updateLocations(airportCode, cityCode) {
   locationsRetrieved++;
 
   if (locationsRetrieved === 2) {
+    var oneMonth = moment()
+      .add(1, "months")
+      .format("YYYY-MM-DD");
+    var oneMonthFourDays = moment()
+      .add(1, "months")
+      .add(4, "days")
+      .format("YYYY-MM-DD");
     console.log("START AJAX CHAIN HERE");
+    // findFlights(airportCode, oneMonth, oneMonthFourDays);
+    // findHotels(cityCode, oneMonth, oneMonthFourDays);
   }
 }
 
