@@ -15,6 +15,73 @@ var database = firebase.database();
 const auth = firebase.auth;
 const emailAuth = new auth.EmailAuthProvider();
 
+var TEST_DATA = {
+  flights: [
+    {
+      airline: "American Airlines",
+      price: 200,
+      departureTime: "2:34 PM",
+      layovers: "Non-stop"
+    },
+    {
+      airline: "United Airlines",
+      price: 300,
+      departureTime: "2:34 PM",
+      layovers: "Non-stop"
+    },
+    {
+      airline: "Delta Airlines",
+      price: 450,
+      departureTime: "2:34 PM",
+      layovers: "Non-stop"
+    },
+    {
+      airline: "American Airlines",
+      price: 610,
+      departureTime: "2:34 PM",
+      layovers: "Non-stop"
+    },
+    {
+      airline: "Southwest",
+      price: 630,
+      departureTime: "2:34 PM",
+      layovers: "Non-stop"
+    }
+  ],
+  hotels: [
+    {
+      hotel: "Motel 6",
+      price: 210,
+      stars: "2-star",
+      beds: "1 queen bed"
+    },
+    {
+      hotel: "Sheritan",
+      price: 340,
+      stars: "3-star",
+      beds: "1 queen bed"
+    },
+    {
+      hotel: "Days Inn",
+      price: 360,
+      stars: "3-star",
+      beds: "1 queen bed"
+    },
+    {
+      hotel: "Rodeway Inn",
+      price: 400,
+      stars: "2-star",
+      beds: "1 queen bed"
+    },
+    {
+      hotel: "Motel 6",
+      price: 700,
+      stars: "2-star",
+      beds: "1 queen bed"
+    }
+  ]
+};
+
 var map;
 var infowindow;
 var posLatitude;
@@ -582,8 +649,12 @@ $(document).ready(function() {
         console.log(errorMessage);
         // ...
       });
+    var user = firebase.auth().currentUser;
+    $("#current-user").text(user.email);
+    /*
     const promise = auth.signInWithNameAndPassword(userEmail, userPassword);
     promise.catch(e => console.log(e.message));
+    */
   });
 
   $("#btnLogOut").on("click", function() {
@@ -596,6 +667,7 @@ $(document).ready(function() {
       .catch(function(error) {
         // An error happened.
       });
+    $("#current-user").text("");
   });
 
   $("#btnSignUp").on("click", function() {
@@ -616,11 +688,27 @@ $(document).ready(function() {
         console.log("Something Went Wrong");
         // ...
       });
+    var user = firebase.auth().currentUser;
+    $("#current-user").text(user.email);
     /*
     const promise = auth.createUserWithNameAndPassword(userEmail, userPassword);
     promise.catch(e => console.log(e.message));
     */
   });
+
+  $("#firebase-test").on("click", function() {
+    var userEmail = $("#current-user").text();
+    var user = firebase.auth().currentUser;
+    console.log(user);
+
+    database.ref("user/" + user.uid).update({
+      Email: userEmail,
+      Flight: TEST_DATA.flights[0]
+    });
+
+    console.log(userEmail);
+  });
+  //When doing the snapshot, use: database.ref("user/" + user.uid).once(function(snapshot){})
 
   $(".ui-segment").hide();
   // Rajita changes
