@@ -14,12 +14,6 @@ body {
   margin-top: 5rem;
   margin: 20px;
 }
-
-/* new stuff */
-.green {
-  /* background: green; */
-  height: 200px;
-}
 h1 {
   text-align: center;
   font-size: 80px;
@@ -28,11 +22,7 @@ h2 {
   text-align: center;
   font-size: 40px;
 }
-.flight-row:hover,
-.hotel-row:hover {
-  cursor: pointer;
-  background: rgb(197, 197, 197);
-}
+
 .chosen-row {
   background: grey;
   border: none;
@@ -43,9 +33,134 @@ h2 {
 }
 .chosen-data-flight {
   padding: 1rem;
-  background: grey;
+  color: white;
+  background: #2d2f30;
 }
 .chosen-data-hotel {
+  color: white;
   padding: 1rem;
-  background: grey;
+  background: #2d2f30;
+}
+button {
+  border-radius: 0px !important;
+}
+input::placeholder {
+  font-style: italic;
+}
+.input-style {
+  margin: 5px 10px !important;
+  background: #1a1b1c !important;
+  border: none !important;
+  border-bottom: 1px solid white !important;
+  color: white !important;
+  border-radius: 0px !important;
+}
+.input-style:focus {
+  border: none !important;
+  border-bottom: 1px solid #d8ee4c !important;
+}
+.input-missing {
+  border-bottom: 1px solid rgb(143, 5, 5) !important;
+}
+#location-services {
+  margin: 4px;
+  background: #ffffff40 !important;
+}
+.title {
+  font-family: "Righteous", cursive !important;
+  font-size: 64px !important;
+  position: relative;
+  top: 151px;
+  left: -61px;
+  text-shadow: 3px 3px black;
+}
+.title-div {
+  margin-top: -125px;
+}
+.logo-image {
+  width: 180px;
+  height: 100%;
+}
+
+/* RESULTS PAGE */
+.total-div {
+  background: rgb(74, 76, 82);
+}
+.chosen-div {
+  margin-top: 15px !important;
+}
+th {
+  font-style: italic;
+  color: white !important;
+  background: #1a1b1c !important;
+}
+.results-image td {
+  border-top: 1px solid rgba(238, 232, 170, 0.247) !important;
+}
+table {
+  color: white !important;
+  border: none !important;
+  border-radius: none !important;
+}
+.flight-row,
+.hotel-row,
+.thingstodo-row {
+  background: #1a1b1c !important;
+}
+.flight-row:hover,
+.hotel-row:hover {
+  cursor: pointer;
+  background: black !important;
+}
+.chosen-th {
+  background: #2d2f30 !important;
+  border: none !important;
+}
+#top-text {
+  margin: 0px;
+  padding: 20px;
+}
+#total-price {
+  color: white;
+  font-family: "Righteous", cursive !important;
+  width: 50%;
+  position: absolute;
+  left: 16px;
+  top: 80px;
+  text-align: right;
+  z-index: 1;
+  text-shadow: 3px 3px black;
+}
+.price-div {
+  background: #3b3f41;
+}
+.top-margin {
+  margin-top: 65px !important;
+}
+.results-image {
+  width: 180px;
+  height: 134%;
+  position: absolute;
+  top: -21px;
+  left: calc(50% - 74px);
+  z-index: 0;
+}
+tr {
+  background: black !important;
+}
+#footer {
+  text-align: center;
+  background: black;
+}
+
+header {
+  background-color: black;
+  color: white;
+  padding: 5px;
+  height: 43px;
+  padding-left: 20px;
+}
+
+#btnSignUp {
+  float: right;
 }
