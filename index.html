@@ -39,39 +39,6 @@
     <title>DART</title>
   </head>
   <body>
-    <!--
-      Head (Current Changes)
-          <div class="container">
-            <input id="txtEmail" type="name" placeholder="Email">
-            <input id="txtPassword" type="password" placeholder="Password">
-            <button id="btnLogIn" class="btn-action">Log In</button>
-            <button id="btnLogOut" class="btn-action">Log Out</button>
-            <button id="btnSignUp" class="btn-action">Sign Up</button>
-            <div style="color:white">Current User:</div>
-            <div id="current-user" style="color:white"></div>
-            <button id="firebase-send-test">Send To Firebase</button>
-            <button id="firebase-retrieval-button">Get Data From Firebase</button>
-            <div style="color:white">Data From Firebase:</div>
-            <div id="firebase-retrieval" style="color:white"></div>
-          </div>
-          <div class="pusher">
-            <div class="ui inverted vertical masthead center aligned segment">
-              <div class="ui text container">
-                <div class="ui inverted huge header">DART</div>
-              </div>
-              <br />
-              <div class="ui icon input">
-                  <input id="searchField" type="text" placeholder="Search..." />
-                  <i id="search" class="circular search link icon"></i>
-                </div>
-
-                <div class="ui right labeled input">
-                    <label for="amount" class="ui label">$</label>
-                    <input type="text" placeholder="Your Budget" id="amount">
-                    <div class="ui basic label">.00</div>
-      Head (Current Changes) ends
-    -->
-    <!-- master (Incoming Changes) -->
     <header>
       Dart
       <div class="user-div" id="logged-out">
@@ -84,7 +51,7 @@
         </button>
       </div>
       <div class="user-div" id="logged-in" style="display: none">
-        <span id="current-user">username</span>
+        <span id="current-user"></span>
         <button
           class="ui button yellow create_btn"
           type="button"
@@ -106,14 +73,34 @@
       <div class="container">
         <div class="ui inverted segment">
           <form class="ui inverted form">
-            <div class="field">
-              <label>Email address</label>
-              <input id="txtEmail" type="email" placeholder="Email" />
-              <!-- master (Incoming Changes) Ends -->
+            <div class="ui icon input field" style="width:100%">
+              <!-- <label>Email address</label> -->
+              <input
+                class="input-style"
+                id="txtEmail"
+                type="email"
+                placeholder="Email"
+              />
+              <div
+                id="email-tooltip"
+                class="tooltip"
+                data-tooltip="Add users to your feed"
+              >
+                <i
+                  data-inverted=""
+                  class="icon exclamation inverted circle link button"
+                  style="color:red; font-size: 20px"
+                ></i>
+              </div>
             </div>
             <div class="field">
-              <label>Password</label>
-              <input id="txtPassword" type="password" placeholder="Password" />
+              <!-- <label>Password</label> -->
+              <input
+                class="input-style"
+                id="txtPassword"
+                type="password"
+                placeholder="Password"
+              />
             </div>
             <button id="btnLogIn" class="ui yellow button">Log In</button>
             <button id="btnSignUp" class="ui yellow button">Sign Up</button>
@@ -122,9 +109,6 @@
       </div>
     </div>
     <div class="ui container center aligned segment inverted">
-      <!--
-        <div class="ui inverted vertical masthead center aligned segment">
-      -->
       <div class="ui text container title-div">
         <div class="ui inverted huge header title">DART<br /></div>
         <img class="logo-image" src="assets/images/globe.png" />
@@ -137,6 +121,17 @@
           id="from-input"
           placeholder="From..."
         />
+        <div
+          id="from-tooltip"
+          class="tooltip"
+          data-tooltip="Add users to your feed"
+        >
+          <i
+            data-inverted=""
+            class="icon exclamation inverted circle link button"
+            style="color:red; font-size: 20px"
+          ></i>
+        </div>
         <i
           id="location-services"
           class="icon crosshairs inverted circular link"
@@ -149,6 +144,17 @@
           type="text"
           placeholder="To..."
         />
+        <div
+          id="to-tooltip"
+          class="tooltip"
+          data-tooltip="Add users to your feed"
+        >
+          <i
+            data-inverted=""
+            class="icon exclamation inverted circle link button"
+            style="color:red; font-size: 20px"
+          ></i>
+        </div>
       </div>
       <!--
         <div class="ui input">
