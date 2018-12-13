@@ -74,9 +74,32 @@
     <!-- master (Incoming Changes) -->
     <header>
       Dart
-      <button class="ui button yellow create_btn" type="button" id="btnSignUp">
-        Sign Up
-      </button>
+      <div class="user-div" id="logged-out">
+        <button
+          class="ui button yellow create_btn"
+          type="button"
+          id="btn-show-modal"
+        >
+          Log In / Sign Up
+        </button>
+      </div>
+      <div class="user-div" id="logged-in" style="display: none">
+        <span id="current-user">username</span>
+        <button
+          class="ui button yellow create_btn"
+          type="button"
+          id="btn-saved"
+        >
+          Saved
+        </button>
+        <button
+          class="ui button yellow create_btn"
+          type="button"
+          id="btnLogOut"
+        >
+          Log Out
+        </button>
+      </div>
     </header>
     <div class="ui modal signupPopup">
       <i class="close icon"></i>
@@ -92,8 +115,8 @@
               <label>Password</label>
               <input id="txtPassword" type="password" placeholder="Password" />
             </div>
-            <button id="btnLogIn" class="ui button">Log In</button>
-            <button id="btnLogOut" class="ui button">Log Out</button>
+            <button id="btnLogIn" class="ui yellow button">Log In</button>
+            <button id="btnSignUp" class="ui yellow button">Sign Up</button>
           </form>
         </div>
       </div>

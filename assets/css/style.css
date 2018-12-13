@@ -1,7 +1,10 @@
 body {
   background: #1b1c1d;
 }
-
+.user-div {
+  float: right;
+  padding-right: 10px;
+}
 .ui.segment {
   background: black;
   margin-top: 20px;
