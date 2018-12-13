@@ -559,6 +559,12 @@ function findLocOnSearch(searchText, setOrigin) {
   });
 }
 
+function hideUserModal() {
+  $(".signupPopup").modal("hide");
+  $("#txtEmail").val("");
+  $("#txtPassword").val("");
+}
+
 var TEST_DATA = {
   flights: [
     {
@@ -614,23 +620,17 @@ var DISPLAY_DATA = {
 };
 
 $(document).ready(function() {
-  /*//HEAD (Current Changes) begins
-  $("#btnLogOut").hide();
-  //Hides login or logout buttons depending on whether someone is signed in
-  $(".btn-action").on("click", function() {
-    var user = firebase.auth().currentUser;
-    console.log(user);
-    //HEAD (Current Changes) Ends*/
-  //Master (Incoming Change) Begins
-  $("#btnSignUp").click(function() {
+  $("#btn-show-modal").click(function() {
     $(".signupPopup").modal("show");
   });
   $(".signupPopup").modal({
     closable: true
-    //Master (Incoming Change) Ends
   });
 
-  $("#btnLogIn").on("click", function() {
+  $("#btnLogIn").on("click", function(e) {
+    e.preventDefault();
+    var errorCode = "";
+    var errorMessage = "";
     var userEmail = $("#txtEmail").val();
     var userPassword = $("#txtPassword").val();
     firebase
@@ -638,27 +638,21 @@ $(document).ready(function() {
       .signInWithEmailAndPassword(userEmail, userPassword)
       .catch(function(error) {
         // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        errorCode = error.code;
+        errorMessage = error.message;
         console.log(errorCode);
         console.log(errorMessage);
         // ...
       })
       .then(function() {
-        var user = firebase.auth().currentUser;
-        $("#current-user").text(user.email);
-        if (user === null) {
-          $("#btnLogIn").show();
-          $("#btnLogOut").hide();
-          $("#btnSignUp").show();
-          $("#txtEmail").show();
-          $("#txtPassword").show();
-        } else {
-          $("#btnLogIn").hide();
-          $("#btnLogOut").show();
-          $("#btnSignUp").hide();
-          $("#txtEmail").hide();
-          $("#txtPassword").hide();
+        if (errorCode === "") {
+          hideUserModal();
+          var user = firebase.auth().currentUser;
+          $("#current-user").text(user.email);
+          if (user != null) {
+            $("#logged-out").hide();
+            $("#logged-in").show();
+          }
         }
         /*
           const promise = auth.signInWithNameAndPassword(userEmail, userPassword);
@@ -667,28 +661,26 @@ $(document).ready(function() {
       });
   });
 
-  $("#btnLogOut").on("click", function() {
+  $("#btnLogOut").on("click", function(e) {
+    e.preventDefault();
     firebase
       .auth()
       .signOut()
       .then(function() {
         // Sign-out successful.
+        $("#logged-out").show();
+        $("#logged-in").hide();
       })
       .catch(function(error) {
         // An error happened.
-      })
-      .then(function() {
-        $("#current-user").text("");
-        $("#btnLogIn").show();
-        $("#btnLogOut").hide();
-        $("#btnSignUp").show();
-        $("#txtEmail").show();
-        $("#txtPassword").show();
-        $("#firebase-retrieval").text("");
+        console.log(error.errorCode);
       });
   });
 
-  $("#btnSignUp").on("click", function() {
+  $("#btnSignUp").on("click", function(e) {
+    e.preventDefault();
+    var errorCode = "";
+    var errorMessage = "";
     var userEmail = $("#txtEmail").val();
     var userPassword = $("#txtPassword").val();
     firebase
@@ -699,33 +691,26 @@ $(document).ready(function() {
       })
       .catch(function(error) {
         // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        errorCode = error.code;
+        errorMessage = error.message;
         console.log(errorCode);
         console.log(errorMessage);
-        console.log("Something Went Wrong");
-        // ...
       })
       .then(function() {
-        var user = firebase.auth().currentUser;
-        $("#current-user").text(user.email);
-        if (user === null) {
-          $("#btnLogIn").show();
-          $("#btnLogOut").hide();
-          $("#btnSignUp").show();
-          $("#txtEmail").show();
-          $("#txtPassword").show();
-        } else {
-          $("#btnLogIn").hide();
-          $("#btnLogOut").show();
-          $("#btnSignUp").hide();
-          $("#txtEmail").hide();
-          $("#txtPassword").hide();
+        if (errorCode === "") {
+          hideUserModal();
+          var user = firebase.auth().currentUser;
+          console.log(user);
+          $("#current-user").text(user.email);
+          if (user != null) {
+            $("#logged-out").hide();
+            $("#logged-in").show();
+          }
         }
-        /*
-          const promise = auth.createUserWithNameAndPassword(userEmail, userPassword);
-          promise.catch(e => console.log(e.message));
-        */
+        //   /*
+        //     const promise = auth.createUserWithNameAndPassword(userEmail, userPassword);
+        //     promise.catch(e => console.log(e.message));
+        //   */
       });
   });
 
