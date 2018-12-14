@@ -1,39 +1,3 @@
-var intervalID;
-
-var timer = 0;
-function increaseTimer() {
-  timer++;
-  if (timer >= 1799) {
-    //...
-  }
-}
-
-function runTimer() {
-  clearInterval(intervalID);
-  intervalID = setInterval(increaseTimer, 1000);
-}
-
-function stopTimer() {
-  clearInterval(intervalID);
-}
-
-// Initialize Firebase
-var config = {
-  apiKey: "AIzaSyC3Bnvip6bvt2gN9kUa2FOiRvSaYfIisyk",
-  authDomain: "my-first-project-dca58.firebaseapp.com",
-  databaseURL: "https://my-first-project-dca58.firebaseio.com",
-  projectId: "my-first-project-dca58",
-  storageBucket: "my-first-project-dca58.appspot.com",
-  messagingSenderId: "197544299923"
-};
-firebase.initializeApp(config);
-
-// Create a variable to reference the database
-var database = firebase.database();
-
-const auth = firebase.auth;
-const emailAuth = new auth.EmailAuthProvider();
-
 var map;
 var infowindow;
 var posLatitude;
@@ -45,6 +9,19 @@ var locationsRetrieved = 0;
 var accessToken = "";
 var airportCode = "";
 var cityCode = "";
+var todoLat;
+var todoLng;
+var user;
+
+var DISPLAY_DATA = {
+  from: "",
+  to: "",
+  chosenFlightId: 0,
+  chosenHotelId: 0,
+  flights: [],
+  hotels: [],
+  attractions: []
+};
 
 //JSON object for map (Alex)
 var style = [
@@ -268,6 +245,23 @@ var style = [
   }
 ];
 
+var intervalID;
+var timer = 0;
+function increaseTimer() {
+  timer++;
+  if (timer >= 1798) {
+    timer = 0;
+    getAccessToken();
+  }
+}
+function runTimer() {
+  clearInterval(intervalID);
+  intervalID = setInterval(increaseTimer, 1000);
+}
+function stopTimer() {
+  clearInterval(intervalID);
+}
+
 function initMap() {
   var raleigh = { lat: 0, lng: 0 };
   map = new google.maps.Map(document.getElementById("map"), {
@@ -289,6 +283,7 @@ function initMap() {
 }
 
 function getAccessToken() {
+  stopTimer();
   $.ajax({
     url: "https://test.api.amadeus.com/v1/security/oauth2/token",
     headers: {
@@ -307,9 +302,10 @@ function getAccessToken() {
       // findStartAirport(posLatitude, posLongitude);
     },
     error: function() {
-      alert("Error with getting access token");
+      console.log("Error with getting access token");
     }
   });
+  runTimer();
 }
 
 function findStartAirport(lat, lng) {
@@ -329,6 +325,7 @@ function findStartAirport(lat, lng) {
     if (response.data.length > 0) {
       origin = response.data[0].iataCode;
       $("#from-input").val(origin);
+      DISPLAY_DATA.from = response.data[0].iataCode;
       updateLocations(response.data[0].iataCode);
     } else {
       console.log("FAIL ORIGIN AIRPORT");
@@ -351,7 +348,8 @@ function setDestination(lat, long) {
 function findNearestAirports(lat, lng) {
   $("#to-tooltip").hide();
   $("#searchField").removeClass("input-missing");
-
+  todoLat = lat;
+  todoLng = lng;
   var queryURL =
     "https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude=" +
     lat +
@@ -370,6 +368,7 @@ function findNearestAirports(lat, lng) {
       airportCode = airports[0].iataCode;
       cityCode = airports[0].address.cityCode;
       $("#searchField").val(airportCode);
+      DISPLAY_DATA.to = airportCode;
       updateLocations(airportCode);
     } else {
       console.log("FAIL DESTINATION AIRPORT");
@@ -412,8 +411,7 @@ function findFlights(destination, departureDate, returnDate) {
         price: Math.round(flights[i].offerItems[0].price.total),
         departureTime:
           flights[i].offerItems[0].services[0].segments[0].flightSegment
-            .departure.at,
-        layovers: flights[i].offerItems[0].services[0].segments.length
+            .departure.at
       });
     }
     console.log(response);
@@ -429,7 +427,7 @@ function findHotels(city, departureDate, returnDate) {
     departureDate +
     "&checkOutDate=" +
     returnDate +
-    "&radius=50";
+    "&radius=100";
 
   $.ajax({
     url: queryURL,
@@ -449,19 +447,46 @@ function findHotels(city, departureDate, returnDate) {
       DISPLAY_DATA.hotels.push({
         hotel: hotels[i].hotel.name,
         price: Math.round(hotels[i].offers[0].price.total),
-        stars: hotels[i].hotel.rating,
-        beds: hotels[i].offers[0].room.type
+        stars: hotels[i].hotel.rating
       });
     }
     console.log(response);
+    findThingsToDo();
     updateData();
   });
+}
+
+function findThingsToDo() {
+  var search = new google.maps.LatLng(todoLat, todoLng);
+  var service = new google.maps.places.PlacesService(map);
+  var request = {
+    location: search,
+    radius: 50000,
+    type: ["point_of_interest"],
+    keyword: ["things to do", "park", "lake", "museum"],
+    rankBy: google.maps.places.RankBy.PROMINENCE
+  };
+  service.nearbySearch(request, callbackThingstoDo);
+}
+
+function callbackThingstoDo(results, status) {
+  if (status === google.maps.places.PlacesServiceStatus.OK) {
+    console.log(results);
+    var attractionsLength = results.length;
+    if (attractionsLength > 5) {
+      attractionsLength = 5;
+    }
+    for (var i = 0; i < attractionsLength; i++) {
+      DISPLAY_DATA.attractions.push(results[i]);
+    }
+    updateData();
+  }
 }
 
 function updateData() {
   dataRetrieved++;
 
-  if (dataRetrieved === 2) {
+  if (dataRetrieved === 3) {
     console.log("READY");
     localStorage.setItem("DATA", JSON.stringify(DISPLAY_DATA));
     $(".ui-segment").hide();
@@ -483,9 +508,9 @@ function updateLocations(location) {
       .add(4, "days")
       .format("YYYY-MM-DD");
     console.log("START AJAX CHAIN HERE");
-    // $(".ui-segment").show();
-    // findFlights(airportCode, oneMonth, oneMonthFourDays);
-    // findHotels(cityCode, oneMonth, oneMonthFourDays);
+    $(".ui-segment").show();
+    findFlights(airportCode, oneMonth, oneMonthFourDays);
+    findHotels(cityCode, oneMonth, oneMonthFourDays);
   }
 }
 
@@ -522,246 +547,7 @@ function findLocOnSearch(searchText, setOrigin) {
   });
 }
 
-function hideUserModal() {
-  $(".signupPopup").modal("hide");
-  $("#txtEmail").val("");
-  $("#txtPassword").val("");
-}
-
-function checkUserModalInputs() {
-  $("#email-tooltip").hide();
-  var email = $("#txtEmail")
-    .val()
-    .trim();
-  var password = $("#txtPassword")
-    .val()
-    .trim();
-
-  if (email === "") {
-    $("#txtEmail").addClass("input-missing");
-  }
-  if (password === "") {
-    $("#txtPassword").addClass("input-missing");
-  }
-}
-
-var TEST_DATA = {
-  flights: [
-    {
-      airline: "American Airlines",
-      price: 200,
-      departureTime: "2:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      price: 500,
-      airline: "United",
-      departureTime: "12:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      price: 1500,
-      airline: "Frontier",
-      departureTime: "11:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      price: 550,
-      airline: "JetBlue",
-      departureTime: "04:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      price: 560,
-      airline: "Delta",
-      departureTime: "06:34 PM",
-      layovers: "Charlotte"
-    }
-  ],
-  hotels: [
-    {
-      hotel: "Motel 6",
-      price: 100,
-      stars: "2-star",
-      beds: "1 queen bed"
-    },
-    {
-      price: 110,
-      hotel: "Holiday Inn",
-      stars: "4-star",
-      beds: "2 queen beds"
-    }
-  ]
-};
-
-var DISPLAY_DATA = {
-  flights: [],
-  hotels: []
-};
-
 $(document).ready(function() {
-  $("#btn-show-modal").click(function() {
-    $("#email-tooltip").hide();
-    $(".signupPopup").modal("show");
-    $("#txtEmail").removeClass("input-missing");
-    $("#txtPassword").removeClass("input-missing");
-  });
-  $(".signupPopup").modal({
-    closable: true
-  });
-
-  $("#btnLogIn").on("click", function(e) {
-    e.preventDefault();
-    checkUserModalInputs();
-    var errorCode = "";
-    var errorMessage = "";
-    var userEmail = $("#txtEmail").val();
-    var userPassword = $("#txtPassword").val();
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(userEmail, userPassword)
-      .then(function(response) {
-        console.log(response);
-        var user = firebase.auth().currentUser;
-        console.log(user.email);
-        //   $("#current-user").text(user.email);
-        //   if (user === null) {
-        //     $("#btnLogIn").show();
-        //     $("#btnLogOut").hide();
-        //     $("#btnSignUp").show();
-        //     $("#txtEmail").show();
-        //     $("#txtPassword").show();
-        //   } else {
-        //     $("#btnLogIn").hide();
-        //     $("#btnLogOut").show();
-        //     $("#btnSignUp").hide();
-        //     $("#txtEmail").hide();
-        //     $("#txtPassword").hide();
-        //   }
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        errorCode = error.code;
-        errorMessage = error.message;
-        $("#email-tooltip")
-          .show()
-          .attr("data-tooltip", errorMessage);
-        console.log(errorCode);
-        console.log(errorMessage);
-        // ...
-      })
-      .then(function() {
-        if (errorCode === "") {
-          hideUserModal();
-          var user = firebase.auth().currentUser;
-          $("#current-user").text(user.email);
-          if (user != null) {
-            $("#logged-out").hide();
-            $("#logged-in").show();
-          }
-        }
-      });
-  });
-
-  $("#btnLogOut").on("click", function(e) {
-    e.preventDefault();
-    firebase
-      .auth()
-      .signOut()
-      .then(function(response) {
-        console.log(response);
-        // Sign-out successful.
-        $("#logged-out").show();
-        $("#logged-in").hide();
-      })
-      .catch(function(error) {
-        // An error happened.
-        console.log(error.message);
-      });
-  });
-
-  $("#btnSignUp").on("click", function(e) {
-    e.preventDefault();
-    checkUserModalInputs();
-    var errorCode = "";
-    var errorMessage = "";
-    var userEmail = $("#txtEmail").val();
-    var userPassword = $("#txtPassword").val();
-    console.log(userEmail);
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(userEmail, userPassword)
-      .then(function(response) {
-        console.log(response);
-        var user = firebase.auth().currentUser;
-        console.log(user.email);
-        $("#current-user").text(user.email);
-        //   /*
-        //   if (user === null) {
-        //     $("#btnLogIn").show();
-        //     $("#btnLogOut").hide();
-        //     $("#btnSignUp").show();
-        //     $("#txtEmail").show();
-        //     $("#txtPassword").show();
-        //   } else {
-        //     $("#btnLogIn").hide();
-        //     $("#btnLogOut").show();
-        //     $("#btnSignUp").hide();
-        //     $("#txtEmail").hide();
-        //     $("#txtPassword").hide();
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        errorCode = error.code;
-        errorMessage = error.message;
-        $("#email-tooltip")
-          .show()
-          .attr("data-tooltip", errorMessage);
-        console.log(errorCode);
-        console.log(errorMessage);
-      })
-      .then(function() {
-        if (errorCode === "") {
-          hideUserModal();
-          var user = firebase.auth().currentUser;
-          console.log(user);
-          $("#current-user").text(user.email);
-          if (user != null) {
-            $("#logged-out").hide();
-            $("#logged-in").show();
-          }
-        }
-        //   /*
-        //     const promise = auth.createUserWithNameAndPassword(userEmail, userPassword);
-        //     promise.catch(e => console.log(e.message));
-        //   */
-      });
-  });
-
-  $("#firebase-send-test").on("click", function() {
-    var currentUserEmail = $("#current-user").text();
-    var user = firebase.auth().currentUser;
-    var flightTest = TEST_DATA.flights[0].airline;
-    console.log(user);
-
-    database.ref("user/" + user.uid).update({
-      Email: currentUserEmail,
-      Flight: flightTest
-    });
-
-    console.log(currentUserEmail);
-  });
-
-  $("#firebase-retrieval-button").on("click", function() {
-    var user = firebase.auth().currentUser;
-    database.ref("user/" + user.uid).once("value", function(snapshot) {
-      //code goes here
-      currentUserEmail = snapshot.val().Email;
-      flightTest = snapshot.val().Flight;
-      $("#firebase-retrieval").text(currentUserEmail + flightTest);
-    });
-  });
-
   $(".ui-segment").hide();
 
   $("#location-services").on("click", function() {
@@ -815,24 +601,6 @@ $(document).ready(function() {
     } else {
       findLocOnSearch(fromInput, true);
     }
-
-    // if (city != null || city != "") {
-    //   var queryURL =
-    //     "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-    //     city +
-    //     "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
-    //   $.ajax({
-    //     url: queryURL,
-    //     method: "GET"
-    //   }).then(function(response) {
-    //     var results = response.results;
-
-    //     var zoomLocation = results[0].geometry.location;
-    //     map.setZoom(5);
-    //     map.panTo(zoomLocation);
-    //     setDestination(zoomLocation.lat, zoomLocation.lng);
-    //   });
-    // }
   });
   getAccessToken();
   $("#from-tooltip").hide();

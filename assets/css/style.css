@@ -18,6 +18,12 @@ body {
 #txtPassword {
   width: 95%;
 }
+.save-div {
+  font-size: 40px;
+  position: absolute;
+  right: 3px;
+  top: 20px;
+}
 #map {
   height: 500px;
   width: 100%;
@@ -119,12 +125,16 @@ th {
 table {
   color: white !important;
   border: none !important;
-  border-radius: none !important;
+  border-radius: 0px !important;
+  background: none !important;
 }
 .flight-row,
 .hotel-row,
 .thingstodo-row {
   background: #1a1b1c !important;
+}
+.light-row {
+  background: #222224 !important;
 }
 .flight-row:hover,
 .hotel-row:hover {
@@ -145,7 +155,7 @@ table {
   width: 50%;
   position: absolute;
   left: 16px;
-  top: 80px;
+  top: 54px;
   text-align: right;
   z-index: 1;
   text-shadow: 3px 3px black;
