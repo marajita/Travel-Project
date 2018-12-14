@@ -3,7 +3,7 @@ var intervalID;
 var timer = 0;
 function increaseTimer() {
   timer++;
-  if (timer === 1799) {
+  if (timer >= 1799) {
     //...
   }
 }
