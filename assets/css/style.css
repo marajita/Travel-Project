@@ -130,14 +130,16 @@ table {
 }
 .flight-row,
 .hotel-row,
-.thingstodo-row {
+.thingstodo-row,
+.saved-row {
   background: #1a1b1c !important;
 }
 .light-row {
   background: #222224 !important;
 }
 .flight-row:hover,
-.hotel-row:hover {
+.hotel-row:hover,
+.saved-row:hover {
   cursor: pointer;
   background: black !important;
 }
