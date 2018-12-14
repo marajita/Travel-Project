@@ -1,3 +1,22 @@
+var intervalID;
+
+var timer = 0;
+function increaseTimer() {
+  timer++;
+  if (timer >= 1799) {
+    //...
+  }
+}
+
+function runTimer() {
+  clearInterval(intervalID);
+  intervalID = setInterval(increaseTimer, 1000);
+}
+
+function stopTimer() {
+  clearInterval(intervalID);
+}
+
 // Initialize Firebase
 var config = {
   apiKey: "AIzaSyC3Bnvip6bvt2gN9kUa2FOiRvSaYfIisyk",
@@ -601,6 +620,25 @@ $(document).ready(function() {
     firebase
       .auth()
       .signInWithEmailAndPassword(userEmail, userPassword)
+      .then(function(response) {
+        console.log(response);
+        var user = firebase.auth().currentUser;
+        console.log(user.email);
+        //   $("#current-user").text(user.email);
+        //   if (user === null) {
+        //     $("#btnLogIn").show();
+        //     $("#btnLogOut").hide();
+        //     $("#btnSignUp").show();
+        //     $("#txtEmail").show();
+        //     $("#txtPassword").show();
+        //   } else {
+        //     $("#btnLogIn").hide();
+        //     $("#btnLogOut").show();
+        //     $("#btnSignUp").hide();
+        //     $("#txtEmail").hide();
+        //     $("#txtPassword").hide();
+        //   }
+      })
       .catch(function(error) {
         // Handle Errors here.
         errorCode = error.code;
@@ -630,7 +668,8 @@ $(document).ready(function() {
     firebase
       .auth()
       .signOut()
-      .then(function() {
+      .then(function(response) {
+        console.log(response);
         // Sign-out successful.
         $("#logged-out").show();
         $("#logged-in").hide();
@@ -648,11 +687,28 @@ $(document).ready(function() {
     var errorMessage = "";
     var userEmail = $("#txtEmail").val();
     var userPassword = $("#txtPassword").val();
+    console.log(userEmail);
     firebase
       .auth()
       .createUserWithEmailAndPassword(userEmail, userPassword)
       .then(function(response) {
         console.log(response);
+        var user = firebase.auth().currentUser;
+        console.log(user.email);
+        $("#current-user").text(user.email);
+        //   /*
+        //   if (user === null) {
+        //     $("#btnLogIn").show();
+        //     $("#btnLogOut").hide();
+        //     $("#btnSignUp").show();
+        //     $("#txtEmail").show();
+        //     $("#txtPassword").show();
+        //   } else {
+        //     $("#btnLogIn").hide();
+        //     $("#btnLogOut").show();
+        //     $("#btnSignUp").hide();
+        //     $("#txtEmail").hide();
+        //     $("#txtPassword").hide();
       })
       .catch(function(error) {
         // Handle Errors here.
