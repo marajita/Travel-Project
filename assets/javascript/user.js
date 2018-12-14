@@ -13,7 +13,7 @@ firebase.initializeApp(config);
 var database = firebase.database();
 var user;
 var totalPrice = 0;
-var TEST_DATA = [];
+var SAVED_DATA = [];
 
 const auth = firebase.auth;
 const emailAuth = new auth.EmailAuthProvider();
@@ -53,9 +53,9 @@ function updateSavedData() {
     .append("<th>Airline</th>")
     .append("<th>Hotel</th>");
   $("#saved-table").append(newHeadRow);
-  for (var i = 0; i < TEST_DATA.length; i++) {
+  for (var i = 0; i < SAVED_DATA.length; i++) {
     var newRow = $("<tr>");
-    var totalCost = TEST_DATA[i].flight.price + TEST_DATA[i].hotel.price;
+    var totalCost = SAVED_DATA[i].flight.price + SAVED_DATA[i].hotel.price;
     newRow
       .addClass("saved-row")
       .attr("data-id", i)
@@ -64,11 +64,11 @@ function updateSavedData() {
           i +
           "' style='font-size: 16px'><i class='close icon'></i></button>"
       )
-      .append("<td>" + TEST_DATA[i].from + "</td>")
-      .append("<td>" + TEST_DATA[i].to + "</td>")
+      .append("<td>" + SAVED_DATA[i].from + "</td>")
+      .append("<td>" + SAVED_DATA[i].to + "</td>")
       .append("<td>" + totalCost + "</td>")
-      .append("<td>" + TEST_DATA[i].flight.airline + "</td>")
-      .append("<td>" + TEST_DATA[i].hotel.hotel + "</td>");
+      .append("<td>" + SAVED_DATA[i].flight.airline + "</td>")
+      .append("<td>" + SAVED_DATA[i].hotel.hotel + "</td>");
     $("#saved-table").append(newRow);
     if (i % 2 === 0) {
       newRow.addClass("light-row");
@@ -78,41 +78,41 @@ function updateSavedData() {
 
 function updateFlight(id) {
   $("#current-flight").empty();
-  $("#flight-price").text("$" + TEST_DATA[id].flight.price);
+  $("#flight-price").text("$" + SAVED_DATA[id].flight.price);
   var newRow = $("<tr>");
   newRow
     .addClass("chosen-row")
-    .append("<th class='chosen-th'>" + TEST_DATA[id].flight.airline + "</th>")
+    .append("<th class='chosen-th'>" + SAVED_DATA[id].flight.airline + "</th>")
     .append(
-      "<th class='chosen-th'>" + TEST_DATA[id].flight.departureTime + "</th>"
+      "<th class='chosen-th'>" + SAVED_DATA[id].flight.departureTime + "</th>"
     );
   $("#current-flight").append(newRow);
 }
 
 function updateHotel(id) {
   $("#current-hotel").empty();
-  $("#hotel-price").text("$" + TEST_DATA[id].hotel.price);
+  $("#hotel-price").text("$" + SAVED_DATA[id].hotel.price);
   var totalStars = "";
-  for (var i = 0; i < TEST_DATA[id].hotel.stars; i++) {
+  for (var i = 0; i < SAVED_DATA[id].hotel.stars; i++) {
     totalStars += "<i class='icon star inverted'></i>";
   }
   var newRow = $("<tr>");
   newRow
     .addClass("chosen-row")
-    .append("<th class='chosen-th'>" + TEST_DATA[id].hotel.hotel + "</th>")
+    .append("<th class='chosen-th'>" + SAVED_DATA[id].hotel.hotel + "</th>")
     .append("<th class='chosen-th'>" + totalStars + "</th>");
   $("#current-hotel").append(newRow);
 }
 
 function updatePrice(id) {
-  totalPrice = TEST_DATA[id].hotel.price + TEST_DATA[id].flight.price;
+  totalPrice = SAVED_DATA[id].hotel.price + SAVED_DATA[id].flight.price;
   $("#total-price").text("$" + totalPrice);
 }
 
 function initSaved() {
   var user = firebase.auth().currentUser;
   database.ref("user/" + user.uid).once("value", function(snapshot) {
-    TEST_DATA = JSON.parse(snapshot.val().saved);
+    SAVED_DATA = JSON.parse(snapshot.val().saved);
     updateSavedData();
   });
 }
@@ -133,9 +133,9 @@ $(document).ready(function() {
     var id = $(this).attr("data-id");
     $("#top-text").text(
       "Round-trip from " +
-        TEST_DATA[id].from +
+        SAVED_DATA[id].from +
         " to " +
-        TEST_DATA[id].to +
+        SAVED_DATA[id].to +
         ", for four nights"
     );
     updateFlight(id);
@@ -145,9 +145,9 @@ $(document).ready(function() {
 
   $("table").on("click", ".remove-saved", function(e) {
     e.stopPropagation();
-    TEST_DATA.splice($(this).attr("data-id"), 1);
+    SAVED_DATA.splice($(this).attr("data-id"), 1);
     var user = firebase.auth().currentUser;
-    var saved = JSON.stringify(TEST_DATA);
+    var saved = JSON.stringify(SAVED_DATA);
     database.ref("user/" + user.uid + "/saved").set(saved);
     updateSavedData();
   });
@@ -261,7 +261,7 @@ $(document).ready(function() {
   });
 
   $("#add-saved").on("click", function() {
-    TEST_DATA.push({
+    SAVED_DATA.push({
       from: DISPLAY_DATA.from,
       to: DISPLAY_DATA.to,
       flight: DISPLAY_DATA.flights[DISPLAY_DATA.chosenFlightId],
@@ -269,7 +269,7 @@ $(document).ready(function() {
     });
 
     var user = firebase.auth().currentUser;
-    var saved = JSON.stringify(TEST_DATA);
+    var saved = JSON.stringify(SAVED_DATA);
     database.ref("user/" + user.uid + "/saved").set(saved);
   });
 });
