@@ -1,10 +1,22 @@
 body {
   background: #1b1c1d;
 }
-
+.user-div {
+  float: right;
+  padding-right: 10px;
+}
+#current-user {
+  font-style: italic;
+  padding-right: 14px;
+  font-size: 16px;
+}
 .ui.segment {
   background: black;
   margin-top: 20px;
+}
+#txtEmail,
+#txtPassword {
+  width: 95%;
 }
 #map {
   height: 500px;
@@ -13,6 +25,13 @@ body {
 .ui.stackable {
   margin-top: 5rem;
   margin: 20px;
+}
+.tooltip {
+  position: absolute;
+  left: -2px;
+  top: 13px;
+  color: red;
+  font-size: 20px;
 }
 h1 {
   text-align: center;
@@ -163,4 +182,7 @@ header {
 
 #btnSignUp {
   float: right;
+}
+.signupPopup {
+  width: 400px !important;
 }

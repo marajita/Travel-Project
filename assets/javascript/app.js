@@ -34,73 +34,6 @@ var database = firebase.database();
 const auth = firebase.auth;
 const emailAuth = new auth.EmailAuthProvider();
 
-var TEST_DATA = {
-  flights: [
-    {
-      airline: "American Airlines",
-      price: 200,
-      departureTime: "2:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      airline: "United Airlines",
-      price: 300,
-      departureTime: "2:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      airline: "Delta Airlines",
-      price: 450,
-      departureTime: "2:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      airline: "American Airlines",
-      price: 610,
-      departureTime: "2:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      airline: "Southwest",
-      price: 630,
-      departureTime: "2:34 PM",
-      layovers: "Non-stop"
-    }
-  ],
-  hotels: [
-    {
-      hotel: "Motel 6",
-      price: 210,
-      stars: "2-star",
-      beds: "1 queen bed"
-    },
-    {
-      hotel: "Sheritan",
-      price: 340,
-      stars: "3-star",
-      beds: "1 queen bed"
-    },
-    {
-      hotel: "Days Inn",
-      price: 360,
-      stars: "3-star",
-      beds: "1 queen bed"
-    },
-    {
-      hotel: "Rodeway Inn",
-      price: 400,
-      stars: "2-star",
-      beds: "1 queen bed"
-    },
-    {
-      hotel: "Motel 6",
-      price: 700,
-      stars: "2-star",
-      beds: "1 queen bed"
-    }
-  ]
-};
-
 var map;
 var infowindow;
 var posLatitude;
@@ -399,6 +332,10 @@ function findStartAirport(lat, lng) {
       updateLocations(response.data[0].iataCode);
     } else {
       console.log("FAIL ORIGIN AIRPORT");
+      $("#from-tooltip")
+        .show()
+        .attr("data-tooltip", "No airport found near location!");
+      $("#from-input").addClass("input-missing");
     }
   });
 }
@@ -412,6 +349,9 @@ function setDestination(lat, long) {
 }
 
 function findNearestAirports(lat, lng) {
+  $("#to-tooltip").hide();
+  $("#searchField").removeClass("input-missing");
+
   var queryURL =
     "https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude=" +
     lat +
@@ -433,6 +373,10 @@ function findNearestAirports(lat, lng) {
       updateLocations(airportCode);
     } else {
       console.log("FAIL DESTINATION AIRPORT");
+      $("#to-tooltip")
+        .show()
+        .attr("data-tooltip", "No airport found near location!");
+      $("#searchField").addClass("input-missing");
     }
   });
 }
@@ -578,6 +522,29 @@ function findLocOnSearch(searchText, setOrigin) {
   });
 }
 
+function hideUserModal() {
+  $(".signupPopup").modal("hide");
+  $("#txtEmail").val("");
+  $("#txtPassword").val("");
+}
+
+function checkUserModalInputs() {
+  $("#email-tooltip").hide();
+  var email = $("#txtEmail")
+    .val()
+    .trim();
+  var password = $("#txtPassword")
+    .val()
+    .trim();
+
+  if (email === "") {
+    $("#txtEmail").addClass("input-missing");
+  }
+  if (password === "") {
+    $("#txtPassword").addClass("input-missing");
+  }
+}
+
 var TEST_DATA = {
   flights: [
     {
@@ -633,24 +600,21 @@ var DISPLAY_DATA = {
 };
 
 $(document).ready(function() {
-  /*//HEAD (Current Changes) begins
-  $("#btnLogOut").hide();
-  //Hides login or logout buttons depending on whether someone is signed in
-  $(".btn-action").on("click", function() {
-    var user = firebase.auth().currentUser;
-    console.log(user);
-    //HEAD (Current Changes) Ends*/
-  //Master (Incoming Change) Begins
-  $("#btnSignUp").click(function() {
+  $("#btn-show-modal").click(function() {
+    $("#email-tooltip").hide();
     $(".signupPopup").modal("show");
+    $("#txtEmail").removeClass("input-missing");
+    $("#txtPassword").removeClass("input-missing");
   });
   $(".signupPopup").modal({
     closable: true
-    //Master (Incoming Change) Ends
   });
 
-  $("#btnLogIn").on("click", function() {
-    event.preventDefault();
+  $("#btnLogIn").on("click", function(e) {
+    e.preventDefault();
+    checkUserModalInputs();
+    var errorCode = "";
+    var errorMessage = "";
     var userEmail = $("#txtEmail").val();
     var userPassword = $("#txtPassword").val();
     firebase
@@ -677,37 +641,50 @@ $(document).ready(function() {
       })
       .catch(function(error) {
         // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        errorCode = error.code;
+        errorMessage = error.message;
+        $("#email-tooltip")
+          .show()
+          .attr("data-tooltip", errorMessage);
         console.log(errorCode);
         console.log(errorMessage);
         // ...
+      })
+      .then(function() {
+        if (errorCode === "") {
+          hideUserModal();
+          var user = firebase.auth().currentUser;
+          $("#current-user").text(user.email);
+          if (user != null) {
+            $("#logged-out").hide();
+            $("#logged-in").show();
+          }
+        }
       });
   });
 
-  $("#btnLogOut").on("click", function() {
-    event.preventDefault();
+  $("#btnLogOut").on("click", function(e) {
+    e.preventDefault();
     firebase
       .auth()
       .signOut()
       .then(function(response) {
         console.log(response);
         // Sign-out successful.
-        // $("#current-user").text("");
-        // $("#btnLogIn").show();
-        // $("#btnLogOut").hide();
-        // $("#btnSignUp").show();
-        // $("#txtEmail").show();
-        // $("#txtPassword").show();
-        // $("#firebase-retrieval").text("");
+        $("#logged-out").show();
+        $("#logged-in").hide();
       })
       .catch(function(error) {
         // An error happened.
+        console.log(error.message);
       });
   });
 
-  $("#btnSignUp2").on("click", function() {
-    event.preventDefault();
+  $("#btnSignUp").on("click", function(e) {
+    e.preventDefault();
+    checkUserModalInputs();
+    var errorCode = "";
+    var errorMessage = "";
     var userEmail = $("#txtEmail").val();
     var userPassword = $("#txtPassword").val();
     console.log(userEmail);
@@ -735,12 +712,29 @@ $(document).ready(function() {
       })
       .catch(function(error) {
         // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        errorCode = error.code;
+        errorMessage = error.message;
+        $("#email-tooltip")
+          .show()
+          .attr("data-tooltip", errorMessage);
         console.log(errorCode);
         console.log(errorMessage);
-        console.log("Something Went Wrong");
-        // ...
+      })
+      .then(function() {
+        if (errorCode === "") {
+          hideUserModal();
+          var user = firebase.auth().currentUser;
+          console.log(user);
+          $("#current-user").text(user.email);
+          if (user != null) {
+            $("#logged-out").hide();
+            $("#logged-in").show();
+          }
+        }
+        //   /*
+        //     const promise = auth.createUserWithNameAndPassword(userEmail, userPassword);
+        //     promise.catch(e => console.log(e.message));
+        //   */
       });
   });
 
@@ -770,11 +764,9 @@ $(document).ready(function() {
 
   $(".ui-segment").hide();
 
-  $("#close-warning").on("click", function() {
-    $(".warning-msg").hide();
-  });
-
   $("#location-services").on("click", function() {
+    $("#from-tooltip").hide();
+    $("#from-input").removeClass("input-missing");
     //Gets the latitude and longitude of user's location once the current position is located
     var getLocation = new Promise(function(resolve, reject) {
       function showPosition(position) {
@@ -796,6 +788,8 @@ $(document).ready(function() {
 
   $("#search").on("click", function() {
     locationsRetrieved = 0;
+    $("#from-tooltip").hide();
+    $("#to-tooltip").hide();
     var fromInput = $("#from-input")
       .val()
       .trim();
@@ -806,11 +800,17 @@ $(document).ready(function() {
     $("#searchField").val(city);
 
     if (city === "") {
+      $("#to-tooltip")
+        .show()
+        .attr("data-tooltip", "Enter a destination.");
       $("#searchField").addClass("input-missing");
     } else {
       findLocOnSearch(city, false);
     }
     if (fromInput === "") {
+      $("#from-tooltip")
+        .show()
+        .attr("data-tooltip", "Enter a departure location.");
       $("#from-input").addClass("input-missing");
     } else {
       findLocOnSearch(fromInput, true);
@@ -835,4 +835,6 @@ $(document).ready(function() {
     // }
   });
   getAccessToken();
+  $("#from-tooltip").hide();
+  $("#to-tooltip").hide();
 });
