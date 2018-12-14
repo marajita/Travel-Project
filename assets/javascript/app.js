@@ -13,6 +13,16 @@ var todoLat;
 var todoLng;
 var user;
 
+var DISPLAY_DATA = {
+  from: "",
+  to: "",
+  chosenFlightId: 0,
+  chosenHotelId: 0,
+  flights: [],
+  hotels: [],
+  attractions: []
+};
+
 //JSON object for map (Alex)
 var style = [
   {
@@ -235,6 +245,23 @@ var style = [
   }
 ];
 
+var intervalID;
+var timer = 0;
+function increaseTimer() {
+  timer++;
+  if (timer >= 1798) {
+    timer = 0;
+    getAccessToken();
+  }
+}
+function runTimer() {
+  clearInterval(intervalID);
+  intervalID = setInterval(increaseTimer, 1000);
+}
+function stopTimer() {
+  clearInterval(intervalID);
+}
+
 function initMap() {
   var raleigh = { lat: 0, lng: 0 };
   map = new google.maps.Map(document.getElementById("map"), {
@@ -256,6 +283,7 @@ function initMap() {
 }
 
 function getAccessToken() {
+  stopTimer();
   $.ajax({
     url: "https://test.api.amadeus.com/v1/security/oauth2/token",
     headers: {
@@ -274,9 +302,10 @@ function getAccessToken() {
       // findStartAirport(posLatitude, posLongitude);
     },
     error: function() {
-      alert("Error with getting access token");
+      console.log("Error with getting access token");
     }
   });
+  runTimer();
 }
 
 function findStartAirport(lat, lng) {
@@ -296,6 +325,7 @@ function findStartAirport(lat, lng) {
     if (response.data.length > 0) {
       origin = response.data[0].iataCode;
       $("#from-input").val(origin);
+      DISPLAY_DATA.from = response.data[0].iataCode;
       updateLocations(response.data[0].iataCode);
     } else {
       console.log("FAIL ORIGIN AIRPORT");
@@ -338,6 +368,7 @@ function findNearestAirports(lat, lng) {
       airportCode = airports[0].iataCode;
       cityCode = airports[0].address.cityCode;
       $("#searchField").val(airportCode);
+      DISPLAY_DATA.to = airportCode;
       updateLocations(airportCode);
     } else {
       console.log("FAIL DESTINATION AIRPORT");
@@ -380,8 +411,7 @@ function findFlights(destination, departureDate, returnDate) {
         price: Math.round(flights[i].offerItems[0].price.total),
         departureTime:
           flights[i].offerItems[0].services[0].segments[0].flightSegment
-            .departure.at,
-        layovers: flights[i].offerItems[0].services[0].segments.length
+            .departure.at
       });
     }
     console.log(response);
@@ -397,7 +427,7 @@ function findHotels(city, departureDate, returnDate) {
     departureDate +
     "&checkOutDate=" +
     returnDate +
-    "&radius=50";
+    "&radius=100";
 
   $.ajax({
     url: queryURL,
@@ -407,7 +437,6 @@ function findHotels(city, departureDate, returnDate) {
     method: "GET"
   }).then(function(response) {
     var hotels = response.data;
-    var cityName = hotels[0].hotel.address.cityName;
     var hotelLength = 0;
     if (hotels.length > 5) {
       hotelLength = 5;
@@ -418,17 +447,16 @@ function findHotels(city, departureDate, returnDate) {
       DISPLAY_DATA.hotels.push({
         hotel: hotels[i].hotel.name,
         price: Math.round(hotels[i].offers[0].price.total),
-        stars: hotels[i].hotel.rating,
-        beds: hotels[i].offers[0].room.type
+        stars: hotels[i].hotel.rating
       });
     }
     console.log(response);
-    findThingsToDo(cityName);
+    findThingsToDo();
     updateData();
   });
 }
 
-function findThingsToDo(searchLocation) {
+function findThingsToDo() {
   var search = new google.maps.LatLng(todoLat, todoLng);
   var service = new google.maps.places.PlacesService(map);
   var request = {
@@ -438,38 +466,27 @@ function findThingsToDo(searchLocation) {
     keyword: ["things to do", "park", "lake", "museum"],
     rankBy: google.maps.places.RankBy.PROMINENCE
   };
-
-  //find point of interest
   service.nearbySearch(request, callbackThingstoDo);
 }
 
 function callbackThingstoDo(results, status) {
-  console.log(results);
-  // if (status === google.maps.places.PlacesServiceStatus.OK) {
-  //   for (var i = 0; i < results.length; i++) {
-  //     var thingstodoObj = results[i];
-  //     console.log(results[i]);
-  //     console.log(thingstodoObj.photos[0].html_attributions[0]);
-
-  // var newRow = $("<tr>");
-  // newRow
-  //   .addClass("thingstodo-row")
-  //   .attr("id", i)
-  //   .append("<td>" + thingstodoObj.name + "</td>")
-  //   .append("<td>" + thingstodoObj.rating + "</td>")
-  //   .append("<td>" + thingstodoObj.vicinity + "</td>")
-  //   .append(
-  //     "<td>" + thingstodoObj.photos[0].html_attributions[0] + "</td>"
-  //   );
-  // $("#thingstodo-table").append(newRow);
-  //   }
-  // }
+  if (status === google.maps.places.PlacesServiceStatus.OK) {
+    console.log(results);
+    var attractionsLength = results.length;
+    if (attractionsLength > 5) {
+      attractionsLength = 5;
+    }
+    for (var i = 0; i < attractionsLength; i++) {
+      DISPLAY_DATA.attractions.push(results[i]);
+    }
+    updateData();
+  }
 }
 
 function updateData() {
   dataRetrieved++;
 
-  if (dataRetrieved === 2) {
+  if (dataRetrieved === 3) {
     console.log("READY");
     localStorage.setItem("DATA", JSON.stringify(DISPLAY_DATA));
     $(".ui-segment").hide();
@@ -492,7 +509,7 @@ function updateLocations(location) {
       .format("YYYY-MM-DD");
     console.log("START AJAX CHAIN HERE");
     $(".ui-segment").show();
-    // findFlights(airportCode, oneMonth, oneMonthFourDays);
+    findFlights(airportCode, oneMonth, oneMonthFourDays);
     findHotels(cityCode, oneMonth, oneMonthFourDays);
   }
 }
@@ -529,62 +546,6 @@ function findLocOnSearch(searchText, setOrigin) {
     }
   });
 }
-
-var TEST_DATA = {
-  flights: [
-    {
-      airline: "American Airlines",
-      price: 200,
-      departureTime: "2:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      price: 500,
-      airline: "United",
-      departureTime: "12:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      price: 1500,
-      airline: "Frontier",
-      departureTime: "11:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      price: 550,
-      airline: "JetBlue",
-      departureTime: "04:34 PM",
-      layovers: "Non-stop"
-    },
-    {
-      price: 560,
-      airline: "Delta",
-      departureTime: "06:34 PM",
-      layovers: "Charlotte"
-    }
-  ],
-  hotels: [
-    {
-      hotel: "Motel 6",
-      price: 100,
-      stars: "2-star",
-      beds: "1 queen bed"
-    },
-    {
-      price: 110,
-      hotel: "Holiday Inn",
-      stars: "4-star",
-      beds: "2 queen beds"
-    }
-  ]
-};
-
-var DISPLAY_DATA = {
-  from: "",
-  to: "",
-  flights: [],
-  hotels: []
-};
 
 $(document).ready(function() {
   $(".ui-segment").hide();
@@ -640,24 +601,6 @@ $(document).ready(function() {
     } else {
       findLocOnSearch(fromInput, true);
     }
-
-    // if (city != null || city != "") {
-    //   var queryURL =
-    //     "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-    //     city +
-    //     "&key=AIzaSyAtkZKjttye0ywNE5_lGpE2VG-4_X7FLGE";
-    //   $.ajax({
-    //     url: queryURL,
-    //     method: "GET"
-    //   }).then(function(response) {
-    //     var results = response.results;
-
-    //     var zoomLocation = results[0].geometry.location;
-    //     map.setZoom(5);
-    //     map.panTo(zoomLocation);
-    //     setDestination(zoomLocation.lat, zoomLocation.lng);
-    //   });
-    // }
   });
   getAccessToken();
   $("#from-tooltip").hide();

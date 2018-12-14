@@ -15,6 +15,7 @@ var user;
 
 const auth = firebase.auth;
 const emailAuth = new auth.EmailAuthProvider();
+var provider = new firebase.auth.GoogleAuthProvider();
 
 function hideUserModal() {
   $(".signupPopup").modal("hide");
@@ -40,6 +41,14 @@ function checkUserModalInputs() {
 }
 
 $(document).ready(function() {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user != null) {
+      $("#current-user").text(user.email);
+      $("#logged-out").hide();
+      $("#logged-in").show();
+    }
+  });
+
   $("#btn-show-modal").click(function() {
     $("#email-tooltip").hide();
     $(".signupPopup").modal("show");
@@ -59,13 +68,7 @@ $(document).ready(function() {
     var userPassword = $("#txtPassword").val();
     firebase
       .auth()
-      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      .then(function() {
-        return firebase
-          .auth()
-          .signInWithEmailAndPassword(userEmail, userPassword);
-      })
-
+      .signInWithEmailAndPassword(userEmail, userPassword)
       .catch(function(error) {
         // Handle Errors here.
         errorCode = error.code;
@@ -150,27 +153,20 @@ $(document).ready(function() {
   $("#btn-saved").on("click", function() {
     var user = firebase.auth().currentUser;
     database.ref("user/" + user.uid).once("value", function(snapshot) {
-      console.log(snapshot.val());
-      //code goes here
-      //   currentUserEmail = snapshot.val().Email;
-      //   flightTest = snapshot.val().Flight;
-      //   $("#firebase-retrieval").text(currentUserEmail + flightTest);
+      console.log(JSON.parse(snapshot.val().saved));
     });
   });
 
   $("#add-saved").on("click", function() {
-    // TEST_FAVORITES.push({
-    //   from: TEST_DATA.from,
-    //   to: TEST_DATA.to,
-    //   flight: TEST_DATA.flights[TEST_DATA.chosenFlightId],
-    //   hotel: TEST_DATA.hotels[TEST_DATA.chosenHotelId]
-    // });
+    TEST_FAVORITES.push({
+      from: TEST_DATA.from,
+      to: TEST_DATA.to,
+      flight: TEST_DATA.flights[TEST_DATA.chosenFlightId],
+      hotel: TEST_DATA.hotels[TEST_DATA.chosenHotelId]
+    });
 
     var user = firebase.auth().currentUser;
-    var favorites = TEST_FAVORITES;
-    database.ref("user/" + user.uid).update({
-      Email: currentUserEmail,
-      Favorites: "hello"
-    });
+    var saved = JSON.stringify(TEST_FAVORITES);
+    database.ref("user/" + user.uid + "/saved").set(saved);
   });
 });
