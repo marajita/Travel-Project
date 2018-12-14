@@ -8,6 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Site script -->
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
 
     <!--
       <script
@@ -17,7 +18,7 @@
       ></script>
     -->
     <script src="assets/javascript/results.js"></script>
-    <script src="assets/javascript/thingstodo.js"></script>
+    <script src="assets/javascript/user.js"></script>
     <!-- Link to Google Font Righteous -->
     <link
       href="https://fonts.googleapis.com/css?family=Righteous"
@@ -33,15 +34,82 @@
     <title>DART</title>
   </head>
   <body>
-    <header>Dart</header>
+    <header>
+      Dart
+      <div class="user-div" id="logged-out">
+        <button
+          class="ui button yellow create_btn"
+          type="button"
+          id="btn-show-modal"
+        >
+          Log In / Sign Up
+        </button>
+      </div>
+      <div class="user-div" id="logged-in" style="display: none">
+        <span id="current-user"></span>
+        <button
+          class="ui button yellow create_btn"
+          type="button"
+          id="btn-saved"
+        >
+          Saved
+        </button>
+        <button
+          class="ui button yellow create_btn"
+          type="button"
+          id="btnLogOut"
+        >
+          Log Out
+        </button>
+      </div>
+    </header>
+    <div class="ui modal signupPopup">
+      <i class="close icon"></i>
+      <div class="container">
+        <div class="ui inverted segment">
+          <form class="ui inverted form">
+            <div class="ui icon input field" style="width:100%">
+              <input
+                class="input-style"
+                id="txtEmail"
+                type="email"
+                placeholder="Email"
+              />
+              <div
+                id="email-tooltip"
+                class="tooltip"
+                data-tooltip="Add users to your feed"
+              >
+                <i
+                  data-inverted=""
+                  class="icon exclamation inverted circle link button"
+                  style="color:red; font-size: 20px"
+                ></i>
+              </div>
+            </div>
+            <div class="field">
+              <input
+                class="input-style"
+                id="txtPassword"
+                type="password"
+                placeholder="Password"
+              />
+            </div>
+            <button id="btnLogIn" class="ui yellow button">Log In</button>
+            <button id="btnSignUp" class="ui yellow button">Sign Up</button>
+          </form>
+        </div>
+      </div>
+    </div>
     <div class="ui container inverted vertical masthead center aligned segment">
       <div class="column total-div">
-        <div class="ui inverted huge header title" id="total-price">
-          DART<br />
+        <div id="add-saved" class="save-div">
+          <i class="heart icon circular button"></i>
         </div>
+        <div class="ui inverted huge header title" id="total-price"><br /></div>
         <img class="logo-image" src="assets/images/globe.png" />
 
-        <h3 id="top-text">RDU to LAX</h3 id="top-text">
+        <h3 id="top-text">RDU to LAX</h3>
       </div>
       <div class="ui two column doubling grid chosen-div">
         <div class="column">
@@ -73,7 +141,6 @@
                 <th>Layovers</th>
               </tr>
             </thead>
-            <!-- <tbody id="flightTable"></tbody> -->
           </table>
         </div>
         <div class="column black">
@@ -87,7 +154,6 @@
                 <th>No. of Beds</th>
               </tr>
             </thead>
-            <!-- <tbody id="hotelTable"></tbody> -->
           </table>
         </div>
       </div>

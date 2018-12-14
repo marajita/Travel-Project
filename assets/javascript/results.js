@@ -1,10 +1,22 @@
-/* Rajita: 
-    This object has two arrays, one for flights and one for hotels. Each array
-    has a total length of 5 objects containing the data we want to display.
-*/
+// // Initialize Firebase
+// var config = {
+//   apiKey: "AIzaSyC3Bnvip6bvt2gN9kUa2FOiRvSaYfIisyk",
+//   authDomain: "my-first-project-dca58.firebaseapp.com",
+//   databaseURL: "https://my-first-project-dca58.firebaseio.com",
+//   projectId: "my-first-project-dca58",
+//   storageBucket: "my-first-project-dca58.appspot.com",
+//   messagingSenderId: "197544299923"
+// };
+// firebase.initializeApp(config);
+
+// // Create a variable to reference the database
+// var database = firebase.database();
+
 var TEST_DATA = {
   from: "RDU",
   to: "LAX",
+  chosenFlightId: 0,
+  chosenHotelId: 0,
   flights: [
     {
       airline: "American Airlines",
@@ -70,6 +82,60 @@ var TEST_DATA = {
     }
   ]
 };
+var TEST_DATA_TTD = {
+  thingstodo: [
+    {
+      rating: 4.7,
+      name: "Bass Lake Park",
+      vicinity: "900 Bass Lake Rd, Holly Springs",
+      photos: [
+        {
+          html_attributions: [
+            '<a href="https://maps.google.com/maps/contrib/103953167144745303486/photos">vicki g</a>'
+          ]
+        }
+      ]
+    },
+    {
+      rating: 4.5,
+      name: "North Carolina: Museum of Natural Sciences",
+      vicinity: "Park Avenue",
+      photos: [
+        {
+          html_attributions: [
+            '<a href="https://maps.google.com/maps/contrib/118436893859587628171/photos">North Carolina: Museum of Natural Sciences</a>'
+          ]
+        }
+      ]
+    },
+    {
+      rating: 4.9,
+      name: "Redhat Amphitheater",
+      vicinity: "100 Downtown Ave",
+      photos: [
+        {
+          html_attributions: [
+            '<a href="https://maps.google.com/maps/contrib/108638231834824896585/photos">Zee Cyphor</a>'
+          ]
+        }
+      ]
+    },
+    {
+      rating: 4.3,
+      name: "Jordan Lake",
+      vicinity: "1000 Jorden Dr",
+      photos: [
+        {
+          html_attributions: [
+            '<a href="https://maps.google.com/maps/contrib/103674796616436086310/photos">Artspace</a>'
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+var TEST_FAVORITES = [];
 
 var chosenFlightPrice = 0;
 var chosenHotelPrice = 0;
@@ -79,6 +145,7 @@ function updateTotalPrice() {
 }
 
 function updateChosenFlight(id) {
+  TEST_DATA.chosenFlightId = id;
   $("#current-flight").empty();
   $("#flight-price").text("$" + TEST_DATA.flights[id].price);
   var newRow = $("<tr>");
@@ -97,6 +164,7 @@ function updateChosenFlight(id) {
 }
 
 function updateChosenHotel(id) {
+  TEST_DATA.chosenHotelId = id;
   $("#current-hotel").empty();
   $("#hotel-price").text("$" + TEST_DATA.hotels[id].price);
   var totalStars = "";
@@ -145,6 +213,20 @@ function updateData() {
       .append("<td>" + TEST_DATA.hotels[i].beds + "</td>");
     $("#hotel-table").append(newRow);
   }
+
+  results = TEST_DATA_TTD.thingstodo;
+  for (var i = 0; i < results.length; i++) {
+    var thingstodoObj = results[i];
+    var newRow = $("<tr>");
+    newRow
+      .addClass("thingstodo-row")
+      .attr("id", i)
+      .append("<td>" + thingstodoObj.name + "</td>")
+      .append("<td>" + thingstodoObj.rating + "</td>")
+      .append("<td>" + thingstodoObj.vicinity + "</td>")
+      .append("<td>" + thingstodoObj.photos[0].html_attributions[0] + "</td>");
+    $("#thingstodo-table").append(newRow);
+  }
 }
 
 $(document).ready(function() {
@@ -163,5 +245,21 @@ $(document).ready(function() {
   });
   $(".hotel-row").on("click", function() {
     updateChosenHotel($(this).attr("id"));
+  });
+
+  $("#add-saved").on("click", function() {
+    TEST_FAVORITES.push({
+      from: TEST_DATA.from,
+      to: TEST_DATA.to,
+      flight: TEST_DATA.flights[TEST_DATA.chosenFlightId],
+      hotel: TEST_DATA.hotels[TEST_DATA.chosenHotelId]
+    });
+
+    var user = firebase.auth().currentUser;
+    var favorites = TEST_FAVORITES;
+    database.ref("user/" + user.uid).update({
+      Email: currentUserEmail,
+      Favorites: favorites
+    });
   });
 });
