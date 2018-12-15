@@ -297,9 +297,7 @@ function getAccessToken() {
       client_secret: "oabpCuBYyfpcRGsa"
     },
     success: function(response) {
-      console.log(response.expires_in);
       accessToken = response.access_token;
-      // findStartAirport(posLatitude, posLongitude);
     },
     error: function() {
       console.log("Error with getting access token");
@@ -335,14 +333,6 @@ function findStartAirport(lat, lng) {
       $("#from-input").addClass("input-missing");
     }
   });
-}
-
-function setDestination(lat, long) {
-  $(".ui-segment").show();
-  // AJAX CALL CHAIN TRIGGERED HERE, DO NOT UNCOMMENT
-  // #region DO_NOT_UNCOMMENT
-  // findNearestAirports(lat, long);
-  // #endregion
 }
 
 function findNearestAirports(lat, lng) {
