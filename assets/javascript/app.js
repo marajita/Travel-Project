@@ -445,7 +445,7 @@ function findHotels(city, departureDate, returnDate) {
     }
     for (var i = 0; i < hotelLength; i++) {
       DISPLAY_DATA.hotels.push({
-        hotel: hotels[i].hotel.name,
+        hotel: toPascalCase(hotels[i].hotel.name),
         price: Math.round(hotels[i].offers[0].price.total),
         stars: hotels[i].hotel.rating
       });
@@ -601,8 +601,36 @@ $(document).ready(function() {
     } else {
       findLocOnSearch(fromInput, true);
     }
+    //console.log(convertAirlineCodeToName("F9"));
   });
   getAccessToken();
   $("#from-tooltip").hide();
   $("#to-tooltip").hide();
 });
+
+function toPascalCase(str) {
+  str = str.toLowerCase().split(" ");
+  for (var i = 0; i < str.length; i++) {
+    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+  }
+  return str.join(" ");
+}
+
+function convertAirlineCodeToName(airlineCode) {
+  var airlineName;
+  var queryURL =
+    "https://test.api.amadeus.com/v1/reference-data/airlines?airlineCodes=" +
+    airlineCode;
+  $.ajax({
+    url: queryURL,
+    headers: {
+      Authorization: "Bearer " + accessToken
+    },
+    method: "GET"
+  }).then(function(response) {
+    var airline = response.data;
+    console.log(airline.businessName);
+    airlineName = airline.businessName;
+  });
+  return airlineName;
+}
