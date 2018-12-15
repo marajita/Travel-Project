@@ -30,7 +30,7 @@ body {
 }
 .ui.stackable {
   margin-top: 5rem;
-  margin: 20px;
+  margin: 0;
 }
 .tooltip {
   position: absolute;
@@ -179,17 +179,24 @@ table {
 tr {
   background: black !important;
 }
-#footer {
+.bottom {
   text-align: center;
   background: black;
+  border-top: 2px solid #cccccc;
+  color: white;
+  opacity: 1px;
 }
 
 header {
   background-color: black;
   color: white;
   padding: 5px;
-  height: 43px;
+  height: 45px;
   padding-left: 20px;
+  border-bottom: 2px solid #cccccc;
+  opacity: 1px;
+  font-family: "Righteous", cursive !important;
+  font-size: 20px;
 }
 
 #btnSignUp {
@@ -197,4 +204,15 @@ header {
 }
 .signupPopup {
   width: 400px !important;
+}
+
+h3 {
+  font-family: "Righteous", cursive !important;
+  font-size: 30px;
+}
+
+p {
+  font-family: "Righteous", cursive !important;
+  font-size: 20px;
+  margin-top: 50px;
 }

@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/images/favicon-32x32.png"
+    />
     <!-- jQuery script -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Site script -->
@@ -35,10 +42,10 @@
   </head>
   <body>
     <header>
-      Dart
+      DART
       <div class="user-div" id="logged-out">
         <button
-          class="ui button yellow create_btn"
+          class="ui button blue create_btn"
           type="button"
           id="btn-show-modal"
         >
@@ -47,18 +54,10 @@
       </div>
       <div class="user-div" id="logged-in" style="display: none">
         <span id="current-user"></span>
-        <button
-          class="ui button yellow create_btn"
-          type="button"
-          id="btn-saved"
-        >
+        <button class="ui button blue create_btn" type="button" id="btn-saved">
           Saved
         </button>
-        <button
-          class="ui button yellow create_btn"
-          type="button"
-          id="btnLogOut"
-        >
+        <button class="ui blue yellow create_btn" type="button" id="btnLogOut">
           Log Out
         </button>
       </div>
@@ -95,8 +94,8 @@
                 placeholder="Password"
               />
             </div>
-            <button id="btnLogIn" class="ui yellow button">Log In</button>
-            <button id="btnSignUp" class="ui yellow button">Sign Up</button>
+            <button id="btnLogIn" class="ui blue button">Log In</button>
+            <button id="btnSignUp" class="ui blue button">Sign Up</button>
           </form>
         </div>
       </div>
@@ -170,13 +169,18 @@
         </div>
       </div>
     </div>
-    <div id="footer" class="ui inverted vertical footer segment form-page">
-      <div class="ui container">
-        © Copyright 2018,
-        <a href="https://github.com/AlexanderMesa">Alexander Mesa,</a>
-        <a href="https://github.com/barryriveroll">Barry Riveroll,</a>
-        <a href="https://github.com/marajita">Rajita Maharjan</a>. All Rights
-        Reserved
+    <div class="bottom">
+      <div class="ui stackable grid">
+        <div class="row">
+          <div class="sixteen wide column">
+            © Copyright 2018,
+            <a href="https://github.com/AlexanderMesa">Alexander Mesa,</a>
+            <a href="https://github.com/barryriveroll">Barry Riveroll,</a>
+            <a href="https://github.com/marajita">Rajita Maharjan</a>. All
+            Rights Reserved
+            <a href="dart.html" target="_blank" id="about">About Us</a>
+          </div>
+        </div>
       </div>
     </div>
   </body>
